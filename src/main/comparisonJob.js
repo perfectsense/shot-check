@@ -35,9 +35,9 @@ function sleep(ms) {
 }
 
 // scroll speed is a percentage of maximum
-const defaultScrollSpeed = 80
-const maxScrollSpeed = 1000
-const defaultAutoScrollDistance = 100
+const defaultScrollSpeed = 65
+const maxScrollSpeed = 500 // 0% will give each $distance pixels this number of milliseconds
+const defaultAutoScrollDistance = 256
 const timeout = 30000
 const maximumScrollDistance = 75000
 
@@ -113,8 +113,6 @@ async function capture(page, jobDir, filename, afterAutoscrollCallback, turboAut
   await session.send('Page.setWebLifecycleState', { state: 'active' })
   */
 
-  // const autoscrolling = (turboAutoscroll && 'Turbo Autoscrolling') || 'Autoscrolling'
-  // messageCallback(`${autoscrolling} to lazy load all content`)
   await autoScroll(page, turboAutoscroll)
 
   await afterAutoscrollCallback()

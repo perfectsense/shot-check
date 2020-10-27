@@ -110,8 +110,8 @@ export default ({
         leftUrls: (leftUrls && leftUrls.map(urlObj)) || [],
         ignoreSelectors: ignoreSelectors || [],
         clickSelectors: clickSelectors || [],
-        pageLoadJavaScript: pageLoadJS || [],
-        afterScrollJavaScript: afterScrollJS || [],
+        pageLoadJavaScript: pageLoadJS || '',
+        afterScrollJavaScript: afterScrollJS || '',
         beforeAfter: beforeAfter || false,
         rightSpoofUrl: verifySpoofUrl || ''
       }

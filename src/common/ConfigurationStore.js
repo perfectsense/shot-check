@@ -260,7 +260,7 @@ async function generateEnvironmentSiteUrls(projectId, environmentId, siteId, cal
 
 // General configuration
 function getScrollSpeed() {
-  return preferencesStore.get('scrollSpeed', 80)
+  return preferencesStore.get('scrollSpeed', 65)
 }
 
 function getChromiumPath() {
