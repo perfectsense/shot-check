@@ -48,6 +48,7 @@ export default () => {
     }, [])
   } else {
     name = getJob(projectId, jobId).name
+    useEffect(() => setUrlsFetched(true), [])
   }
 
   return (
