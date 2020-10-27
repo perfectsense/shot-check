@@ -1,0 +1,130 @@
+
+// TODO: move this into component-local useStyles()
+
+@button-height: 36px;
+@breadcrumb-height: 15px;
+@header-height: (@breadcrumb-height * 3);
+@footer-height: (@button-height * 2);
+@nav-color: #f6f6f6;
+
+div.Hi {
+  font-family: 'Roboto';
+  font-weight: bold;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  position: fixed;
+  width: 100%;
+  height: @header-height;
+  background-color: @nav-color;
+  a {
+    color: #666;
+    font-size: 15px;
+    position: relative;
+    top: -2px;
+    svg {
+      position: relative;
+      top: 5px;
+    }
+  }
+}
+
+main {
+  display: grid;
+  position: fixed;
+  top: @header-height;
+  bottom: @footer-height;
+  overflow: scroll;
+  width: 100%;
+  padding-top: .5em;
+}
+
+.note {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-family: Roboto;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: @footer-height;
+  margin: 0;
+  padding: 0;
+  background-color: @nav-color;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  grid-template-rows: 1fr;
+  .details {
+    grid-row: 1;
+    grid-column: 1 / 2;
+    padding: 8px;
+  }
+}
+
+nav {
+  grid-row: 1;
+  grid-column: 2 / 3;
+  text-align: right;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding: 8px;
+
+  a {
+    text-decoration: none;
+  }
+  button {
+    margin-right: (@button-height / 4) !important;
+  }
+}
+
+/* Edit Page */
+main.EditPage {
+  display: grid;
+  grid-template-columns: 75px 1fr 75px;
+  grid-template-rows: 2em 1fr 100px;
+
+  .Form {
+    grid-column: 2 / 3;
+    grid-row: 2;
+
+    .MuiFormControl-root {
+      margin-top: 8px !important;
+      margin-bottom: 8px !important;
+    }
+  }
+}
+
+.SitesAndEnvironments {
+  display: grid;
+  grid-template-columns: .5fr 25px .5fr;
+  grid-template-rows: 16px 1fr;
+
+  .Sites {
+    grid-column: 1 / 2;
+    grid-row: 2;
+  }
+
+  .Environments {
+    grid-column: 3 / 4;
+    grid-row: 2;
+  }
+}
+
+.snackbarContainer {
+  bottom: 80px !important;
+}
+
+textarea::-webkit-input-placeholder {
+  white-space: pre-wrap;
+}
+
+textarea:disabled {
+  white-space: pre-wrap;
+}
