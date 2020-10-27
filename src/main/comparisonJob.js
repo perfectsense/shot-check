@@ -82,7 +82,9 @@ function getChromiumExecPath() {
   if (customPath) {
     return customPath
   }
-  return puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked')
+  // This only works because package.json has `build/asar: false`
+  return puppeteer.executablePath()
+  // return puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked')
 }
 
 async function openBrowser() {

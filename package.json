@@ -23,8 +23,7 @@
     "printWidth": 120
   },
   "build": {
-    "asar": true,
-    "asarUnpack": "node_modules/puppeteer/.local-chromium/**/*"
+    "asar": false
   },
   "dependencies": {
     "source-map-support": "0.5.19",
