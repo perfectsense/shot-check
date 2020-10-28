@@ -97,6 +97,9 @@ const PreviousJob = ({ jobId, projectId }) => {
   const history = useHistory()
 
   const job = getJob(projectId, jobId)
+  if (!job) {
+    return null
+  }
   if (job.completionStatus == 'complete') {
     return (
       <Box className={classes.previousJob} width="100%">
