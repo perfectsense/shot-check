@@ -141,7 +141,7 @@ const JobActionButtons = ({ job, setJobs }) => {
         </Button>
       )}
 
-      <Button onClick={copyJob}>Copy</Button>
+      {!showContinue && <Button onClick={copyJob}>Copy</Button>}
       <Button onClick={handleDelete} color="secondary">
         Delete
       </Button>

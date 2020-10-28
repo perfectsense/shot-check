@@ -120,6 +120,10 @@ export default ({
     job.rightUrls = rightUrls.map(urlObj)
   }
 
+  if (job.beforeAfter && !continuing && job.rightUrls.length > 0) {
+    job.rightUrls = []
+  }
+
   const [jobName, setJobName] = useState(() => job.name)
   const [leftSideUrlsList, setLeftSideUrlsList] = useState(() => job.leftUrls.map((u) => u.url))
   const [rightSideUrlsList, setRightSideUrlsList] = useState(() => job.rightUrls.map((u) => u.url))
@@ -271,7 +275,10 @@ export default ({
         <FormControlLabel
           className={classes.beforeAfterSwitch}
           disabled={typeCode != 'manual'}
-          control={<Switch name="beforeAfter" checked={isBeforeAfter} onChange={(_, val) => setIsBeforeAfter(val)} />}
+          control={<Switch name="beforeAfter" checked={isBeforeAfter} onChange={(_, val) => {
+            setIsBeforeAfter(val)
+            validate()
+          }} />}
           label="Before / After?"
         />
 
