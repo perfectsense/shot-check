@@ -188,37 +188,37 @@ export default ({ wizard }) => {
         {!wizard && (
           <>
             <Link to={`/new-site/${projectId}`}>
-              <Button variant="contained" color="default">
+              <Button disableElevation variant="contained" color="default">
                 New Site
               </Button>
             </Link>
             <Link to={`/new-environment/${projectId}`}>
-              <Button variant="contained" color="default">
+              <Button disableElevation variant="contained" color="default">
                 New Environment
               </Button>
             </Link>
             <Link to={`/project/${projectId}`}>
-              <Button variant="contained" color="default">
+              <Button disableElevation variant="contained" color="default">
                 Back
               </Button>
             </Link>
-            <Button variant="contained" color="secondary" onClick={handleDelete}>
+            <Button disableElevation variant="contained" color="secondary" onClick={handleDelete}>
               Delete
             </Button>
             <Dialog open={confirmDeleteOpen}>
               <DialogTitle>Are you sure?</DialogTitle>
               <DialogActions>
-                <Button color="secondary" onClick={handlePermanentlyDelete}>
+                <Button disableElevation color="secondary" onClick={handlePermanentlyDelete}>
                   Permanently Delete
                 </Button>
-                <Button color="default" onClick={() => setConfirmDeleteOpen(false)}>
+                <Button disableElevation color="default" onClick={() => setConfirmDeleteOpen(false)}>
                   Cancel
                 </Button>
               </DialogActions>
             </Dialog>
           </>
         )}
-        <Button variant="contained" color="primary" onClick={handleSave}>
+        <Button disableElevation variant="contained" color="primary" onClick={handleSave}>
           {renderRedirect()}
           {(wizard && 'Next') || 'Save'}
         </Button>

@@ -56,15 +56,15 @@ const SiteCard = ({ projectId, site, setSites }) => {
     <Card className={classes.card}>
       <CardHeader className={classes.cardHeader} subheader="Site" title={site.name} />
       <CardActions disableSpacing>
-        <Button onClick={() => history.push(`/edit-site/${projectId}/${site.siteId}`)}>Edit</Button>
-        <Button onClick={handleDelete}>Delete</Button>
+        <Button disableElevation onClick={() => history.push(`/edit-site/${projectId}/${site.siteId}`)}>Edit</Button>
+        <Button disableElevation onClick={handleDelete}>Delete</Button>
         <Dialog open={confirmDeleteOpen}>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogActions>
-            <Button color="secondary" onClick={handlePermanentlyDelete}>
+            <Button disableElevation color="secondary" onClick={handlePermanentlyDelete}>
               Permanently Delete
             </Button>
-            <Button color="default" onClick={() => setConfirmDeleteOpen(false)}>
+            <Button disableElevation color="default" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
           </DialogActions>
@@ -113,18 +113,18 @@ const EnvironmentCard = ({ projectId, environment, setEnvironments, sites }) => 
         </List>
       </CardContent>
       <CardActions>
-        <Button onClick={() => history.push(`/edit-environment/${projectId}/${environment.environmentId}`)}>
+        <Button disableElevation onClick={() => history.push(`/edit-environment/${projectId}/${environment.environmentId}`)}>
           Edit
         </Button>
-        <Button onClick={handleDelete}>Delete</Button>
+        <Button disableElevation onClick={handleDelete}>Delete</Button>
         <Dialog open={confirmDeleteOpen}>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogContent>
             <DialogContentText>The {environment.name} environment will be permanently deleted!</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handlePermanentlyDelete}>Permanently Delete</Button>
-            <Button onClick={() => setConfirmDeleteOpen(false)}>Cancel</Button>
+            <Button disableElevation onClick={handlePermanentlyDelete}>Permanently Delete</Button>
+            <Button disableElevation onClick={() => setConfirmDeleteOpen(false)}>Cancel</Button>
           </DialogActions>
         </Dialog>
       </CardActions>

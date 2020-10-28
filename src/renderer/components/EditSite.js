@@ -256,18 +256,18 @@ export default ({ wizard }) => {
       <Footer>
         {(!wizard && (
           <Link to={`/edit-project/${projectId}`}>
-            <Button variant="contained" color="default">
+            <Button disableElevation variant="contained" color="default">
               Back
             </Button>
           </Link>
         )) || (
           <Link to={`/project/${projectId}`}>
-            <Button variant="contained" color="default">
+            <Button disableElevation variant="contained" color="default">
               Done
             </Button>
           </Link>
         )}
-        <Button variant="contained" color="primary" onClick={handleSave}>
+        <Button disableElevation variant="contained" color="primary" onClick={handleSave}>
           {renderRedirect()}
           {(wizard && 'Next') || 'Save'}
         </Button>

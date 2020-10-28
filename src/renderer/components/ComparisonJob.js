@@ -588,7 +588,7 @@ export default () => {
         </TableContainer>
       </main>
       <Footer>
-        <Button color="default" variant="contained" onClick={handleOpenDirectory}>
+        <Button disableElevation color="default" variant="contained" onClick={handleOpenDirectory}>
           Browse Directory
         </Button>
       </Footer>

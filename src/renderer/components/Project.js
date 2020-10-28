@@ -223,6 +223,7 @@ const BeforeAndAfterCard = ({ project, className, sites, environments }) => {
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button
+          disableElevation
           disabled={disabled || !valid}
           variant="contained"
           color="primary"
@@ -320,6 +321,7 @@ const EnvironmentToEnvironmentCard = ({ project, className, sites, environments 
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button
+          disableElevation
           disabled={disabled || !valid}
           variant="contained"
           color="primary"
@@ -378,6 +380,7 @@ const VerifyCard = ({ project, className, sites, environments }) => {
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button
+          disableElevation
           disabled={disabled || !valid}
           variant="contained"
           color="primary"
@@ -419,10 +422,10 @@ export default () => {
       </main>
       <Footer>
         <Link to={`/comparison-jobs/${projectId}`}>
-          <Button variant="contained">View Past Checks</Button>
+          <Button disableElevation variant="contained">View Past Checks</Button>
         </Link>
         <Link to={`/edit-project/${projectId}`}>
-          <Button variant="contained" color="primary">
+          <Button disableElevation variant="contained" color="primary">
             Edit Project
           </Button>
         </Link>

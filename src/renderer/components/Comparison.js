@@ -361,9 +361,10 @@ export default ({
 
       <Footer>
         <Link to={`/comparison-jobs/${projectId || '_'}`}>
-          <Button variant="contained">View Past Checks</Button>
+          <Button disableElevation variant="contained">View Past Checks</Button>
         </Link>
         <Button
+          disableElevation
           variant="contained"
           color="primary"
           onClick={handleStartJob}

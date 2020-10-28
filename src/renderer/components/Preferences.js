@@ -234,10 +234,10 @@ export default () => {
         </div>
       </main>
       <Footer>
-        <Button color="default" onClick={handleResetBreakpoints}>
+        <Button disableElevation variant="contained" color="default" onClick={handleResetBreakpoints}>
           Reset Breakpoints
         </Button>
-        <Button variant="contained" color="primary" onClick={handleSave}>
+        <Button disableElevation variant="contained" color="primary" onClick={handleSave}>
           Save
         </Button>
       </Footer>

@@ -25,7 +25,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { getUserDataDir } from '../../common/appConfig'
 import { getJobs } from '../../common/ComparisonResultStore'
-import { getProject } from '../../common/ConfigurationStore'
+import { getProject, updateProjectStats } from '../../common/ConfigurationStore'
 import { convertBytes } from '../../common/FileSizeUtils'
 import { formatDate, formatDuration } from '../../common/FormatingUtils'
 import deleteComparisonJob from '../ipc/deleteComparisonJob'
@@ -118,6 +118,7 @@ const JobActionButtons = ({ job, setJobs }) => {
     deleteComparisonJob(enqueueSnackbar, projectId, job.jobId).then(async () => {
       const jobs = await getJobs(job.projectId)
       setJobs(jobs)
+      updateProjectStats(job.projectId)
     })
   }
 
@@ -133,7 +134,7 @@ const JobActionButtons = ({ job, setJobs }) => {
   const showContinue = job.completionStatus == 'leftSideComplete'
 
   return (
-    <ButtonGroup size="small" color="primary" aria-label="outlined primary button group">
+    <ButtonGroup disableElevation size="small" color="primary" aria-label="outlined primary button group">
       {showView && <Button onClick={() => history.push(`/comparison-job/${projectId}/${job.jobId}`)}>View</Button>}
       {showContinue && (
         <Button onClick={() => history.push(`/continue-before-and-after-comparison/${projectId}/${job.jobId}`)}>
@@ -188,6 +189,7 @@ export default () => {
     for (let jobId of toDelete) {
       await deleteComparisonJob(enqueueSnackbar, projectId, jobId)
     }
+    updateProjectStats(projectId)
 
     const jobs = await getJobs(projectId)
     setJobs(jobs)
@@ -249,19 +251,19 @@ export default () => {
         )) || <CircularProgress style={{ position: 'absolute', left: '50%', top: '50%' }} />}
       </main>
       <Footer>
-        <Button color="default" variant="contained" onClick={handleOpenDirectory}>
+        <Button disableElevation color="default" variant="contained" onClick={handleOpenDirectory}>
           Browse Directory
         </Button>
-        <Button disabled={toDelete.length == 0} color="secondary" variant="contained" onClick={handleDeleteChecked}>
+        <Button disableElevation disabled={toDelete.length == 0} color="secondary" variant="contained" onClick={handleDeleteChecked}>
           Delete Checked
         </Button>
         <Dialog open={confirmDeleteOpen}>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogActions>
-            <Button color="secondary" onClick={handlePermanentlyDelete}>
+            <Button disableElevation color="secondary" onClick={handlePermanentlyDelete}>
               Permanently Delete
             </Button>
-            <Button color="default" onClick={() => setConfirmDeleteOpen(false)}>
+            <Button disableElevation color="default" onClick={() => setConfirmDeleteOpen(false)}>
               Cancel
             </Button>
           </DialogActions>

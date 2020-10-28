@@ -104,6 +104,7 @@ const PreviousJob = ({ jobId, projectId }) => {
     return (
       <Box className={classes.previousJob} width="100%">
         <Button
+          disableElevation
           color="primary"
           className={classes.previousJobButton}
           onClick={() => history.push(`/comparison-job/${projectId || '_'}/${jobId}`)}
@@ -116,6 +117,7 @@ const PreviousJob = ({ jobId, projectId }) => {
     return (
       <Box className={classes.previousJob} width="100%">
         <Button
+          disableElevation
           color="primary"
           className={classes.previousJobButton}
           onClick={() => history.push(`/continue-before-and-after-comparison/${projectId || '_'}/${jobId}`)}
