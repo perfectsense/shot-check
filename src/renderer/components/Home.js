@@ -1,7 +1,9 @@
-import { Button, Card, CardActions, CardHeader, makeStyles } from '@material-ui/core'
+import { Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, List, ListItemText, makeStyles } from '@material-ui/core'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { getProjects } from '../../common/ConfigurationStore'
+import { convertBytes } from '../../common/FileSizeUtils'
+import { formatDate } from '../../common/FormatingUtils'
 import Footer from './Footer'
 import Header from './Header'
 
@@ -10,12 +12,6 @@ const useStyles = makeStyles({
     gridTemplateColumns: '75px 1fr 75px',
     gridTemplateRows: '2em 0px 1fr 100px'
   },
-  /*
-  intro: {
-    gridColumn: '2 / 3',
-    gridRow: '2'
-  },
-  */
   projects: {
     gridColumn: '2 / 3',
     gridRow: '3',
@@ -25,9 +21,10 @@ const useStyles = makeStyles({
     alignContent: 'flex-start'
   },
   projectCard: {
-    height: '200px',
     width: '200px',
     margin: '8px',
+  },
+  cardHeader: {
     cursor: 'pointer'
   }
 })
@@ -40,9 +37,38 @@ const ProjectCard = ({ project }) => {
   }
 
   return (
-    <Card onClick={handleClick} className={classes.projectCard}>
-      <CardHeader className={classes.cardHeader} subheader="Project" title={project.name} />
-      <CardActions disableSpacing></CardActions>
+    <Card className={classes.projectCard}>
+      <CardHeader className={classes.cardHeader} subheader="Project" title={project.name} onClick={handleClick} />
+      <CardContent>
+        <List>
+          <ListItemText
+            primary="Checks"
+            secondary={project.numJobs || '-'}
+            secondary={<Link to={`/comparison-jobs/${project.projectId}`}>{project.numJobs || '-'}</Link>}
+          />
+          <ListItemText
+            primary="Last Check"
+            secondary={<Link to={`/comparison-job/${project.projectId}/${project.lastJobId}`}>{formatDate(project.lastJobDate)}</Link>}
+          />
+          <ListItemText
+            primary="Total Size"
+            secondary={convertBytes(project.totalSize)}
+          />
+        </List>
+      </CardContent>
+      <CardActions alignContent="middle">
+        <ButtonGroup disableElevation size="small" color="primary" aria-label="outlined primary button group">
+          <Button variant="contained" color="default" onClick={() => history.push(`/comparison-jobs/${project.projectId}`)}>
+            Review
+          </Button>
+          <Button variant="contained" color="default" onClick={() => history.push(`/edit-project/${project.projectId}`)}>
+            Edit
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => history.push(`/project/${project.projectId}`)}>
+            Check
+          </Button>
+        </ButtonGroup>
+      </CardActions>
     </Card>
   )
 }
@@ -62,12 +88,12 @@ export default () => {
       </main>
       <Footer>
         <Link to="/manual-comparison">
-          <Button variant="contained" color="default">
+          <Button disableElevation variant="contained" color="default">
             Manual Check
           </Button>
         </Link>
         <Link to="/wizard-project">
-          <Button variant="contained" color="primary">
+          <Button disableElevation variant="contained" color="primary">
             New Project
           </Button>
         </Link>
