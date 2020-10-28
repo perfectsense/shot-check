@@ -1,6 +1,7 @@
 import Store from 'electron-store'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
+import { deleteJob, getJobIds } from './ComparisonResultStore'
 
 const yamlOptions = {
   fileExtension: 'yml',
@@ -89,6 +90,9 @@ function getProjects() {
 
 function deleteProject(projectId) {
   const project = getProject(projectId)
+  for (let jobId of getJobIds(projectId)) {
+    deleteJob(projectId, jobId)
+  }
   if (!project.configPath) {
     projectStore(projectId).clear()
   }

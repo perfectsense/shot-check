@@ -27,18 +27,27 @@ const jobDataDir = (projectId) => {
   return path.join(dataDir, 'jobs', projectId || '_')
 }
 
+const getJobIds = (projectId) => {
+  const jobs = []
+
+  const files = fs.readdirSync(jobDataDir(projectId))
+  for (let filename of files) {
+    let file = fs.statSync(path.join(jobDataDir(projectId), filename))
+    if (file.isDirectory()) {
+      jobs.push(filename)
+    }
+  }
+  return jobs
+}
+
 const getJobs = async (projectId) => {
   const jobs = []
 
   try {
-    const files = fs.readdirSync(jobDataDir(projectId))
-    for (let filename of files) {
-      let file = fs.statSync(path.join(jobDataDir(projectId), filename))
-      if (file.isDirectory()) {
-        const job = getJob(projectId, filename)
-        if (job) {
-          jobs.push(job)
-        }
+    for (let jobId of getJobIds(projectId)) {
+      const job = getJob(projectId, jobId)
+      if (job) {
+        jobs.push(job)
       }
     }
   } catch (error) {
@@ -245,6 +254,7 @@ function deleteJob(projectId, jobId) {
 
 export {
   getJobs,
+  getJobIds,
   saveJob,
   saveJobUrlStatus,
   saveJobUrlDuration,
