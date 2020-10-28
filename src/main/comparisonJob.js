@@ -41,7 +41,7 @@ const defaultAutoScrollDistance = 256
 const timeout = 30000
 const maximumScrollDistance = 75000
 
-async function autoScroll(page, turbo) {
+async function autoScroll(page, turbo, description) {
   let scrollSpeed = getScrollSpeed()
   if (!scrollSpeed || scrollSpeed < 1) {
     scrollSpeed = defaultScrollSpeed
@@ -53,27 +53,41 @@ async function autoScroll(page, turbo) {
   console.log(`${turbo ? 'Turbo ' : ''}Auto-scrolling...`)
 
   await page.evaluate(
-    async (autoScrollTimeout, autoScrollDistance, maximumScrollDistance) => {
+    async (autoScrollTimeout, autoScrollDistance, maximumScrollDistance, description) => {
+      shotCheckMessageCallback(`Starting Auto-scroll of ${description}`)
       await new Promise((resolve, reject) => {
-        var totalHeight = 0
-        var timer = setInterval(async () => {
-          var scrollHeight = document.body.scrollHeight
-          if (totalHeight < scrollHeight) {
-            window.scrollBy(0, autoScrollDistance)
-            totalHeight += autoScrollDistance
-          }
-          if (totalHeight >= scrollHeight || totalHeight > maximumScrollDistance) {
-            window.scrollTo(0, 0)
-            await new Promise((r) => setTimeout(r, 1000)) // Sleep for 1 second after scrolling to the top
-            clearInterval(timer)
-            resolve()
-          }
-        }, autoScrollTimeout)
+        try {
+          var totalHeight = 0
+          var timer = setInterval(async () => {
+            var scrollHeight = document.body.scrollHeight
+            if (totalHeight < scrollHeight) {
+              if (totalHeight % (autoScrollDistance * 7) == 0) {
+                shotCheckMessageCallback(
+                  `Scrolling ${description} (${Math.round(totalHeight / Math.min(scrollHeight, maximumScrollDistance) * 100)}%)`
+                )
+              }
+              window.scrollBy(0, autoScrollDistance)
+              totalHeight += autoScrollDistance
+            }
+            if (totalHeight >= scrollHeight || totalHeight > maximumScrollDistance) {
+              window.scrollTo(0, 0)
+              shotCheckMessageCallback(
+                `Scrolled ${description} (100%), resting. . .`
+              )
+              await new Promise((r) => setTimeout(r, 1000)) // Sleep for 1 second after scrolling to the top
+              clearInterval(timer)
+              resolve()
+            }
+          }, autoScrollTimeout)
+        } catch (error) {
+          reject(error)
+        }
       })
     },
     autoScrollTimeout,
     autoScrollDistance,
-    maximumScrollDistance
+    maximumScrollDistance,
+    description
   )
 }
 
@@ -108,17 +122,19 @@ async function openBrowser() {
   })
 }
 
-async function capture(page, jobDir, filename, afterAutoscrollCallback, turboAutoscroll) {
+async function capture(page, jobDir, filename, messageCallback, description, afterAutoscrollCallback, turboAutoscroll) {
   /*
   const session = await page.target().createCDPSession()
   await session.send('Page.enable')
   await session.send('Page.setWebLifecycleState', { state: 'active' })
   */
 
-  await autoScroll(page, turboAutoscroll)
+  messageCallback(`${turboAutoscroll ? 'Turbo ' : ''} Auto-scrolling ${description}`)
+  await autoScroll(page, turboAutoscroll, description)
 
   await afterAutoscrollCallback()
 
+  messageCallback(`Capturing screenshot of ${description}`)
   await page.screenshot({
     path: path.join(jobDir, filename),
     fullPage: true
@@ -177,6 +193,8 @@ async function takeShot(
 
   const page = await browser.newPage()
 
+  await page.exposeFunction('shotCheckMessageCallback', messageCallback)
+
   if (spoofUrl) {
     const spoofPieces = spoofUrl.split('/')
     if (spoofPieces.length == 3) {
@@ -227,6 +245,8 @@ async function takeShot(
           page,
           thisJobDir,
           `${side}-${index}-${breakpoint.width}.png`,
+          messageCallback,
+          `${side} #${index} at ${breakpoint.width}`,
           async () => {
             await pageDeleteSelectors(page, job.ignoreSelectors)
             await pageClickSelectors(page, job.clickSelectors)
@@ -247,7 +267,7 @@ async function takeShot(
     }
     throw error
   } finally {
-    page.close()
+    await page.close()
   }
 }
 
@@ -460,6 +480,8 @@ const comparisonJob = async (job, callback) => {
     completionStatus = 'leftSideComplete'
   }
   saveJobCompletionStatus(projectId, jobId, completionStatus)
+
+  console.log(`Job ${job.jobId} Done.`)
 
   callback({
     job: job,
