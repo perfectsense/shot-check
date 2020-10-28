@@ -22,7 +22,8 @@ import {
   getDefaultBreakpoints,
   getEnvironmentOrProjectAuth,
   getScrollSpeed,
-  isChromiumHeadless
+  isChromiumHeadless,
+  updateProjectStats
 } from '../common/ConfigurationStore'
 
 const jobDataDir = path.join(getUserDataDir(), 'jobs')
@@ -491,6 +492,9 @@ const comparisonJob = async (job, callback) => {
   const totalDuration = job.duration + (new Date().getTime() - startDate.getTime())
   saveJobDuration(projectId, jobId, totalDuration)
   finalizeJob(projectId, jobId)
+  if (projectId && projectId != '_') {
+    updateProjectStats(projectId)
+  }
   callback({
     job: job,
     status: 'ready',

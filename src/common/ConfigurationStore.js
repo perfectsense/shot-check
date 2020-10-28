@@ -1,7 +1,7 @@
 import Store from 'electron-store'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
-import { deleteJob, getJobIds } from './ComparisonResultStore'
+import { deleteJob, getJobIds, getJobs } from './ComparisonResultStore'
 
 const yamlOptions = {
   fileExtension: 'yml',
@@ -72,7 +72,11 @@ function getProject(projectId) {
   return {
     projectId: projectId,
     name: project.name,
-    configPath: project.configPath || null
+    configPath: project.configPath || null,
+    totalSize: project.totalSize || 0,
+    numJobs: project.numJobs || 0,
+    lastJobDate: project.lastJobDate || null,
+    lastJobId: project.lastJobId || null
   }
 }
 
@@ -384,6 +388,36 @@ function getEnvironmentOrProjectAuth(projectId, environmentId) {
   return env || proj
 }
 
+async function updateProjectStats(projectId) {
+  const project = getProject(projectId)
+  if (!project) {
+    return
+  }
+
+  const jobs = await getJobs(projectId)
+  if (!jobs || !jobs.length) {
+    return
+  }
+
+  let totalSize = 0
+  let latestJobDate = 0
+  let latestJobId
+  for (let job of jobs) {
+    if (isFinite(job.jobSize)) {
+      totalSize += job.jobSize
+    }
+    if (job.startDate > latestJobDate && job.completionStatus == 'complete') {
+      latestJobDate = job.startDate
+      latestJobId = job.jobId
+    }
+  }
+  projectsStore.set('projects.' + projectId + '.totalSize', totalSize)
+  projectsStore.set('projects.' + projectId + '.numJobs', jobs.length)
+  projectsStore.set('projects.' + projectId + '.lastJobDate', latestJobDate)
+  projectsStore.set('projects.' + projectId + '.lastJobId', latestJobId)
+
+}
+
 export {
   getProject,
   createProject,
@@ -415,5 +449,6 @@ export {
   saveEnvironmentAuth,
   getProjectAuth,
   getEnvironmentAuth,
-  getEnvironmentOrProjectAuth
+  getEnvironmentOrProjectAuth,
+  updateProjectStats
 }
