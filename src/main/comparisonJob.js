@@ -64,7 +64,9 @@ async function autoScroll(page, turbo, description) {
             if (totalHeight < scrollHeight) {
               if (totalHeight % (autoScrollDistance * 7) == 0) {
                 shotCheckMessageCallback(
-                  `Scrolling ${description} (${Math.round(totalHeight / Math.min(scrollHeight, maximumScrollDistance) * 100)}%)`
+                  `Scrolling ${description} (${Math.round(
+                    (totalHeight / Math.min(scrollHeight, maximumScrollDistance)) * 100
+                  )}%)`
                 )
               }
               window.scrollBy(0, autoScrollDistance)
@@ -72,9 +74,7 @@ async function autoScroll(page, turbo, description) {
             }
             if (totalHeight >= scrollHeight || totalHeight > maximumScrollDistance) {
               window.scrollTo(0, 0)
-              shotCheckMessageCallback(
-                `Scrolled ${description} (100%), resting. . .`
-              )
+              shotCheckMessageCallback(`Scrolled ${description} (100%), resting. . .`)
               await new Promise((r) => setTimeout(r, 1000)) // Sleep for 1 second after scrolling to the top
               clearInterval(timer)
               resolve()

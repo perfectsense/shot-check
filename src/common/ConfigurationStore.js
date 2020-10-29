@@ -415,7 +415,6 @@ async function updateProjectStats(projectId) {
   projectsStore.set('projects.' + projectId + '.numJobs', jobs.length)
   projectsStore.set('projects.' + projectId + '.lastJobDate', latestJobDate)
   projectsStore.set('projects.' + projectId + '.lastJobId', latestJobId)
-
 }
 
 export {

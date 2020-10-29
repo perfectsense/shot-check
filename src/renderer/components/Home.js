@@ -1,4 +1,14 @@
-import { Button, ButtonGroup, Card, CardActions, CardContent, CardHeader, List, ListItemText, makeStyles } from '@material-ui/core'
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  List,
+  ListItemText,
+  makeStyles
+} from '@material-ui/core'
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { getProjects } from '../../common/ConfigurationStore'
@@ -22,7 +32,7 @@ const useStyles = makeStyles({
   },
   projectCard: {
     width: '200px',
-    margin: '8px',
+    margin: '8px'
   },
   cardHeader: {
     cursor: 'pointer'
@@ -48,20 +58,29 @@ const ProjectCard = ({ project }) => {
           />
           <ListItemText
             primary="Last Check"
-            secondary={<Link to={`/comparison-job/${project.projectId}/${project.lastJobId}`}>{formatDate(project.lastJobDate)}</Link>}
+            secondary={
+              <Link to={`/comparison-job/${project.projectId}/${project.lastJobId}`}>
+                {formatDate(project.lastJobDate)}
+              </Link>
+            }
           />
-          <ListItemText
-            primary="Total Size"
-            secondary={convertBytes(project.totalSize)}
-          />
+          <ListItemText primary="Total Size" secondary={convertBytes(project.totalSize)} />
         </List>
       </CardContent>
       <CardActions alignContent="middle">
         <ButtonGroup disableElevation size="small" color="primary" aria-label="outlined primary button group">
-          <Button variant="contained" color="default" onClick={() => history.push(`/comparison-jobs/${project.projectId}`)}>
+          <Button
+            variant="contained"
+            color="default"
+            onClick={() => history.push(`/comparison-jobs/${project.projectId}`)}
+          >
             Review
           </Button>
-          <Button variant="contained" color="default" onClick={() => history.push(`/edit-project/${project.projectId}`)}>
+          <Button
+            variant="contained"
+            color="default"
+            onClick={() => history.push(`/edit-project/${project.projectId}`)}
+          >
             Edit
           </Button>
           <Button variant="contained" color="primary" onClick={() => history.push(`/project/${project.projectId}`)}>

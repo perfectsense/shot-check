@@ -422,7 +422,9 @@ export default () => {
       </main>
       <Footer>
         <Link to={`/comparison-jobs/${projectId}`}>
-          <Button disableElevation variant="contained">View Past Checks</Button>
+          <Button disableElevation variant="contained">
+            View Past Checks
+          </Button>
         </Link>
         <Link to={`/edit-project/${projectId}`}>
           <Button disableElevation variant="contained" color="primary">

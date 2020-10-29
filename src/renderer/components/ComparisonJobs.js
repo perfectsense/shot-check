@@ -254,7 +254,13 @@ export default () => {
         <Button disableElevation color="default" variant="contained" onClick={handleOpenDirectory}>
           Browse Directory
         </Button>
-        <Button disableElevation disabled={toDelete.length == 0} color="secondary" variant="contained" onClick={handleDeleteChecked}>
+        <Button
+          disableElevation
+          disabled={toDelete.length == 0}
+          color="secondary"
+          variant="contained"
+          onClick={handleDeleteChecked}
+        >
           Delete Checked
         </Button>
         <Dialog open={confirmDeleteOpen}>

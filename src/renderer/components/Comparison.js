@@ -275,10 +275,16 @@ export default ({
         <FormControlLabel
           className={classes.beforeAfterSwitch}
           disabled={typeCode != 'manual'}
-          control={<Switch name="beforeAfter" checked={isBeforeAfter} onChange={(_, val) => {
-            setIsBeforeAfter(val)
-            validate()
-          }} />}
+          control={
+            <Switch
+              name="beforeAfter"
+              checked={isBeforeAfter}
+              onChange={(_, val) => {
+                setIsBeforeAfter(val)
+                validate()
+              }}
+            />
+          }
           label="Before / After?"
         />
 
@@ -361,7 +367,9 @@ export default ({
 
       <Footer>
         <Link to={`/comparison-jobs/${projectId || '_'}`}>
-          <Button disableElevation variant="contained">View Past Checks</Button>
+          <Button disableElevation variant="contained">
+            View Past Checks
+          </Button>
         </Link>
         <Button
           disableElevation
