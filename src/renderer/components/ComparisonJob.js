@@ -337,7 +337,7 @@ const UrlPairTableRow = ({
     matchSummary = Math.round((total / count) * 10000) / 100
   }
 
-  if (hideSuccessful && matchSummary / 100 > threshold) {
+  if (hideSuccessful && matchSummary / 100 >= threshold) {
     return null
   }
 
