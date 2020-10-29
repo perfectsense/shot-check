@@ -118,17 +118,17 @@ export default ({ wizard }) => {
   return (
     <>
       <Header>
-        {project &&
+        {(project && (
           <Link to={`/project/${projectId}`}>
             <EditIcon />
             {name || 'New Project'}
           </Link>
-        ||
+        )) || (
           <a>
             <AddBoxIcon />
             {name || 'New Project'}
           </a>
-        }
+        )}
       </Header>
       <main className="EditPage">
         <div className="Form">

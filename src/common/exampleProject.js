@@ -23,7 +23,18 @@ function initializeExampleProject() {
   saveSite(projectId, site1Id, 'Example', false, null, ['/'], [], [], '', '')
   saveSite(projectId, site2Id, 'Time.gov', false, null, ['/', '/?t=24'], [], [], '', '')
   saveSite(projectId, site3Id, 'Brightspot', false, null, ['/', '/products', '/solutions', '/about-us'], [], [], '', '')
-  saveSite(projectId, site4Id, 'Inspire Confidence', false, null, ['/', '/environment', '/hope', '/innovation/the-new-york-public-library-is-rewriting-the-way-stories-are-told'], [], [], '', '')
+  saveSite(
+    projectId,
+    site4Id,
+    'Inspire Confidence',
+    false,
+    null,
+    ['/', '/environment', '/hope', '/innovation/the-new-york-public-library-is-rewriting-the-way-stories-are-told'],
+    [],
+    [],
+    '',
+    ''
+  )
   createEnvironment(projectId, qaEnvironmentId, 'QA')
   createEnvironment(projectId, uatEnvironmentId, 'UAT')
   createEnvironment(projectId, prodEnvironmentId, 'Production')
@@ -38,7 +49,7 @@ function initializeExampleProject() {
 }
 
 function initializeExampleProjectIfNecessary() {
-  if (getProjects().length = 0) {
+  if ((getProjects().length = 0)) {
     initializeExampleProject()
   }
 }
