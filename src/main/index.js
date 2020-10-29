@@ -6,13 +6,14 @@ import { format as formatUrl } from 'url'
 import * as os from 'os'
 import ipcListeners from './ipc/ipcListeners'
 import { isDevelopment } from '../common/appConfig'
+import { initializeExampleProjectIfNecessary } from '../common/exampleProject'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
 
 function createMainWindow() {
   const window = new BrowserWindow({
-    width: 1280,
+    width: 1294,
     height: 1024,
     minWidth: 1024,
     minHeight: 960,
@@ -74,6 +75,7 @@ app.on('activate', () => {
 
 // create main BrowserWindow when electron is ready
 app.on('ready', () => {
+  initializeExampleProjectIfNecessary()
   mainWindow = createMainWindow()
   ipcListeners()
 })
