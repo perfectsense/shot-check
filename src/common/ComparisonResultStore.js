@@ -30,9 +30,17 @@ const jobDataDir = (projectId) => {
 const getJobIds = (projectId) => {
   const jobs = []
 
-  const files = fs.readdirSync(jobDataDir(projectId))
+  const dir = jobDataDir(projectId)
+
+  try {
+    fs.accessSync(dir, fs.constants.R_OK)
+  } catch (error) {
+    return jobs
+  }
+
+  const files = fs.readdirSync(dir)
   for (let filename of files) {
-    let file = fs.statSync(path.join(jobDataDir(projectId), filename))
+    let file = fs.statSync(path.join(dir, filename))
     if (file.isDirectory()) {
       jobs.push(filename)
     }
