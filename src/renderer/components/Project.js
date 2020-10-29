@@ -225,6 +225,7 @@ const BeforeAndAfterCard = ({ project, className, sites, environments }) => {
         <Button
           disableElevation
           disabled={disabled || !valid}
+          size="small"
           variant="contained"
           color="primary"
           onClick={() => history.push(`/before-and-after-comparison/${project.projectId}/${siteId}/${environmentId}`)}
@@ -323,6 +324,7 @@ const EnvironmentToEnvironmentCard = ({ project, className, sites, environments 
         <Button
           disableElevation
           disabled={disabled || !valid}
+          size="small"
           variant="contained"
           color="primary"
           onClick={() =>
@@ -382,6 +384,7 @@ const VerifyCard = ({ project, className, sites, environments }) => {
         <Button
           disableElevation
           disabled={disabled || !valid}
+          size="small"
           variant="contained"
           color="primary"
           onClick={() => history.push(`/verify-comparison/${project.projectId}/${siteId}/${environmentId}`)}

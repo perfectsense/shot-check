@@ -122,7 +122,7 @@ const PreviousJob = ({ jobId, projectId }) => {
           className={classes.previousJobButton}
           onClick={() => history.push(`/continue-before-and-after-comparison/${projectId || '_'}/${jobId}`)}
         >
-          Continue
+          Continue Before/After Check
         </Button>
       </Box>
     )

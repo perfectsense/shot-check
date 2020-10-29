@@ -31,11 +31,25 @@ const useStyles = makeStyles({
     alignContent: 'flex-start'
   },
   projectCard: {
-    width: '200px',
-    margin: '8px'
+    width: '270px',
+    margin: '8px',
+    display: 'grid',
+    gridTemplateColumns: 'auto',
+    gridTemplateRows: 'min-content 1fr 60px'
   },
   cardHeader: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    gridRow: '1',
+    gridColumn: '1'
+  },
+  cardContent: {
+    gridRow: '2',
+    gridColumn: '1'
+  },
+  cardActions: {
+    gridRow: '3',
+    gridColumn: '1',
+    justifyContent: 'center'
   }
 })
 
@@ -49,25 +63,30 @@ const ProjectCard = ({ project }) => {
   return (
     <Card className={classes.projectCard}>
       <CardHeader className={classes.cardHeader} subheader="Project" title={project.name} onClick={handleClick} />
-      <CardContent>
+      <CardContent className={classes.cardContent}>
         <List>
           <ListItemText
             primary="Checks"
-            secondary={project.numJobs || '-'}
-            secondary={<Link to={`/comparison-jobs/${project.projectId}`}>{project.numJobs || '-'}</Link>}
+            secondary={
+              project.numJobs ? <Link to={`/comparison-jobs/${project.projectId}`}>{project.numJobs || '-'}</Link> : '-'
+            }
           />
           <ListItemText
             primary="Last Check"
             secondary={
-              <Link to={`/comparison-job/${project.projectId}/${project.lastJobId}`}>
-                {formatDate(project.lastJobDate)}
-              </Link>
+              project.lastJobId ? (
+                <Link to={`/comparison-job/${project.projectId}/${project.lastJobId}`}>
+                  {formatDate(project.lastJobDate)}
+                </Link>
+              ) : (
+                '-'
+              )
             }
           />
           <ListItemText primary="Total Size" secondary={convertBytes(project.totalSize)} />
         </List>
       </CardContent>
-      <CardActions alignContent="middle">
+      <CardActions className={classes.cardActions}>
         <ButtonGroup disableElevation size="small" color="primary" aria-label="outlined primary button group">
           <Button
             variant="contained"
@@ -95,6 +114,8 @@ const ProjectCard = ({ project }) => {
 export default () => {
   const classes = useStyles()
   const projects = getProjects()
+
+  projects.sort((l, r) => ((l.lastJobDate || 0) < (r.lastJobDate || 0) ? 1 : -1))
 
   return (
     <>
