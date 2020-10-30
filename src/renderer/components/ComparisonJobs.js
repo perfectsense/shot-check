@@ -91,7 +91,10 @@ const JobTableRow = ({ job, setJobs, toDelete, setToDelete }) => {
       <TableCell>{job.leftUrls ? job.leftUrls.length : '-'}</TableCell>
       <TableCell>{job.duration ? formatDuration(job.duration) : '-'}</TableCell>
       <TableCell>
-        {matchSummary}% / {job.matchThreshold}%
+        {matchSummary
+        ? (Math.min(Math.round((matchSummary / job.matchThreshold * 100)), 100)) + '%'
+        : '-'
+      }
       </TableCell>
       <TableCell width="1">
         <JobActionButtons job={job} setJobs={setJobs} />
@@ -132,6 +135,7 @@ const JobActionButtons = ({ job, setJobs }) => {
 
   const showView = job.completionStatus == 'complete'
   const showContinue = job.completionStatus == 'leftSideComplete'
+  const showCompare = job.completionStatus == 'baselineCaptured'
 
   return (
     <ButtonGroup disableElevation size="small" color="primary" aria-label="outlined primary button group">
@@ -142,7 +146,13 @@ const JobActionButtons = ({ job, setJobs }) => {
         </Button>
       )}
 
-      {!showContinue && <Button onClick={copyJob}>Copy</Button>}
+      {showCompare && (
+        <Button onClick={() => history.push(`/baseline-comparison/${projectId}/${job.jobId}`)}>
+          Compare
+        </Button>
+      )}
+
+      {(!showContinue && !showCompare) && <Button onClick={copyJob}>Copy</Button>}
       <Button onClick={handleDelete} color="secondary">
         Delete
       </Button>
@@ -229,7 +239,7 @@ export default () => {
                   <TableCell>Size</TableCell>
                   <TableCell># URLs</TableCell>
                   <TableCell>Duration</TableCell>
-                  <TableCell>% Match / Threshold </TableCell>
+                  <TableCell>% OK</TableCell>
                   <TableCell>Actions</TableCell>
                   <TableCell>
                     <Checkbox

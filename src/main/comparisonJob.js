@@ -15,7 +15,8 @@ import {
   saveJobUrlDuration,
   saveJobUrlIndexBreakpointMatch,
   saveJobUrlStatus,
-  getJob
+  getJob,
+  copyJobImage
 } from '../common/ComparisonResultStore'
 import {
   getChromiumPath,
@@ -118,6 +119,7 @@ async function openBrowser() {
     headless: isChromiumHeadless(),
     slowMo: false,
     defaultViewport: null,
+    ignoreHTTPSErrors: true,
     // args: chromeArgs,
     ...chromiumPathOptions
   })
@@ -272,11 +274,19 @@ async function takeShot(
   }
 }
 
+function trimUrlOrObj(s) {
+  if (typeof(s) == 'object') {
+    return s
+  } else {
+    return s.replace(/[\n\r\s]/gm, '')
+  }
+}
+
 function trimList(list) {
   if (!list) {
     return []
   }
-  return list.map((s) => s.replace(/[\n\r\s]/gm, '')).filter((s) => s != null && s.length > 0)
+  return list.map((s) => trimUrlOrObj(s)).filter((s) => s != null && (typeof(s) == 'object' || s.length > 0))
 }
 
 async function cropIfNecessary(firstImage, secondImage, firstImagePath) {
@@ -337,29 +347,51 @@ async function compareShots(projectId, jobId, breakpointWidth, index) {
 }
 
 const comparisonJob = async (job, callback) => {
-  const leftUrls = trimList(job.leftUrls)
-  const rightUrls = trimList(job.rightUrls)
   const jobId = job.jobId
   const projectId = job.projectId
   const typeCode = job.typeCode
   const leftEnvironmentId = job.leftEnvironmentId
   const rightEnvironmentId = job.rightEnvironmentId
 
-  let type
   let configurationError
+  if (job.baselineJobId) {
+    const baselineJob = getJob(projectId, job.baselineJobId)
+    if (!baselineJob) {
+      configurationError = 'Invalid Baseline Comparison Job ID!'
+    } else {
+      job.breakpoints = baselineJob.breakpoints
+      job.leftUrls = baselineJob.leftUrls
+    }
+  }
+
+  const leftUrls = trimList(job.leftUrls)
+  const rightUrls = trimList(job.rightUrls)
+
+  let type
 
   if (!leftUrls.length && !rightUrls.length) {
     configurationError = 'Invalid comparison - both lists of URLs are empty!'
     type = 'Invalid'
   } else if (leftUrls.length != rightUrls.length) {
     if (rightUrls.length == 0) {
-      type = 'Before And After (Continuing)'
+      if (job.beforeAfter) {
+        type = 'Before And After (Continuing)'
+      } else if (job.baselineCapture) {
+        type = 'Baseline Capture'
+      } else {
+        type = 'Invalid'
+        configurationError = 'Invalid comparison - right URL list is empty and type is not specified!'
+      }
     } else {
       type = 'Invalid'
       configurationError = 'Invalid comparison - left and right URL lists are different!'
     }
+  } else if (job.baselineCapture) {
+    type = 'Baseline'
   } else if (job.beforeAfter) {
     type = 'Before And After'
+  } else if (job.baselineJobId) {
+    type = 'Baseline Comparison'
   } else {
     type = 'Side By Side'
   }
@@ -380,10 +412,6 @@ const comparisonJob = async (job, callback) => {
     job.breakpoints = existingJob.breakpoints
   }
 
-  console.log('Starting job: ', job)
-
-  saveJob(job)
-
   if (configurationError) {
     callback({
       error: true,
@@ -394,12 +422,15 @@ const comparisonJob = async (job, callback) => {
     return
   }
 
+  console.log('Starting job: ', job)
+  saveJob(job)
+
   const startDate = new Date()
 
   const urlSets = [
     {
       side: 'left',
-      urls: job.beforeAfter && rightUrls && rightUrls.length > 0 ? [] : leftUrls,
+      urls: (job.beforeAfter || job.baselineJobId) && rightUrls && rightUrls.length > 0 ? [] : leftUrls,
       auth: getEnvironmentOrProjectAuth(projectId, leftEnvironmentId),
       spoofUrl: ''
     },
@@ -472,13 +503,21 @@ const comparisonJob = async (job, callback) => {
   if (rightUrls.length > 0) {
     for (let i = 0; i < rightUrls.length; i++) {
       for (let breakpoint of job.breakpoints) {
+        if (job.baselineJobId) {
+          copyJobImage(projectId, job.baselineJobId, jobId,  breakpoint.width, i, 'left')
+        }
         await compareShots(projectId, jobId, breakpoint.width, i)
         callback({ progressIndex: ++progressIndex })
       }
     }
     completionStatus = 'complete'
-  } else {
+  } else if (job.beforeAfter) {
     completionStatus = 'leftSideComplete'
+  } else if (job.baselineCapture) {
+    completionStatus = 'baselineCaptured'
+  } else {
+    completionStatus = 'unknown'
+    callback({message: 'Unknown completion status...'})
   }
   saveJobCompletionStatus(projectId, jobId, completionStatus)
 

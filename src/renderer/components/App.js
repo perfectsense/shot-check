@@ -3,6 +3,7 @@ import { SnackbarProvider } from 'notistack'
 import React from 'react'
 import { HashRouter, Route } from 'react-router-dom'
 import '../style.less'
+import BaselineComparison from './BaselineComparison'
 import BeforeAndAfterComparison from './BeforeAndAfterComparison'
 import ComparisonJob from './ComparisonJob'
 import ComparisonJobs from './ComparisonJobs'
@@ -106,6 +107,10 @@ export default () => {
 
           <Route exact path="/verify-comparison-copy/:projectId/:jobId">
             <VerifyComparison />
+          </Route>
+
+          <Route exact path="/baseline-comparison/:projectId/:jobId">
+            <BaselineComparison />
           </Route>
 
           <Route exact path="/comparison-jobs/:projectId">

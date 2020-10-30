@@ -33,7 +33,11 @@ const useStyles = makeStyles({
   },
   beforeAfterSwitch: {
     gridRow: '5',
-    gridColumn: '2 / 4'
+    gridColumn: '2 / 3'
+  },
+  baselineSwitch: {
+    gridRow: '5',
+    gridColumn: '3 / 4'
   },
   spoofUrlField: {
     gridRow: '5',
@@ -57,9 +61,6 @@ const useStyles = makeStyles({
   },
   urlTextArea: {
     whiteSpace: 'nowrap'
-  },
-  ['urlTextArea::-webkit-input-placeholder']: {
-    whiteSpace: 'normal'
   }
 })
 
@@ -91,7 +92,9 @@ export default ({
   afterScrollJS,
   verifySpoofUrl,
   beforeAfter,
-  continuing
+  continuing,
+  baselineCapture,
+  baselineJobId: baselineJobId
 }) => {
   const runningJobContext = useContext(RunningJobContext)
   const { enqueueSnackbar } = useSnackbar()
@@ -113,6 +116,8 @@ export default ({
         pageLoadJavaScript: pageLoadJS || '',
         afterScrollJavaScript: afterScrollJS || '',
         beforeAfter: beforeAfter || false,
+        baselineCapture: baselineCapture || false,
+        baselineJobId: baselineJobId || null,
         rightSpoofUrl: verifySpoofUrl || ''
       }
 
@@ -132,6 +137,7 @@ export default ({
   const [pageLoadJavaScript, setPageLoadJavaScript] = useState(() => job.pageLoadJavaScript)
   const [afterScrollJavaScript, setAfterScrollJavaScript] = useState(() => job.afterScrollJavaScript)
   const [isBeforeAfter, setIsBeforeAfter] = useState(() => job.beforeAfter)
+  const [isBaselineCapture, setIsBaselineCapture] = useState(() => job.baselineCapture)
   const [rightSpoofUrl, setRightSpoofUrl] = useState(() => job.rightSpoofUrl)
 
   const [leftSideError, setLeftSideError] = useState(false)
@@ -145,7 +151,7 @@ export default ({
 
   const validate = () => {
     let localLeftSideError
-    if (isBeforeAfter && !continuing) {
+    if (((isBaselineCapture || isBeforeAfter) && !continuing)) {
       setRightSideError(false)
     } else {
       localLeftSideError = leftSideUrlsList.filter((s) => s).length != rightSideUrlsList.filter((s) => s).length
@@ -204,14 +210,16 @@ export default ({
       leftEnvironmentId: job.leftEnvironmentId || null,
       rightEnvironmentId: job.rightEnvironmentId || null,
       typeCode: job.typeCode,
-      leftUrls: leftSideUrlsList.filter((s) => s),
+      leftUrls: (continuing || baselineJobId) ? job.leftUrls : leftSideUrlsList.filter((s) => s),
       rightUrls: rightSideUrlsList.filter((s) => s),
       ignoreSelectors: ignoreSelectorsList.filter((s) => s),
       clickSelectors: clickSelectorsList.filter((s) => s),
       pageLoadJavaScript: pageLoadJavaScript,
       afterScrollJavaScript: afterScrollJavaScript,
       rightSpoofUrl: rightSpoofUrl || null,
-      beforeAfter: isBeforeAfter
+      beforeAfter: isBeforeAfter,
+      baselineCapture: isBaselineCapture,
+      baselineJobId: baselineJobId || null
     }
     startComparisonJob(runningJobContext, enqueueSnackbar, startJob, continuing && jobId)
   }
@@ -236,8 +244,8 @@ export default ({
         />
 
         <TextField
-          disabled={continuing}
-          className={isBeforeAfter && !continuing ? classes.bothSides : classes.leftSide}
+          disabled={continuing || baselineJobId}
+          className={(isBaselineCapture || isBeforeAfter) && !continuing ? classes.bothSides : classes.leftSide}
           inputProps={{ className: classes.urlTextArea }}
           label="URLs (one per line)"
           variant="outlined"
@@ -253,7 +261,7 @@ export default ({
           helperText={leftSideHelperText}
         />
 
-        {(!isBeforeAfter || continuing) && (
+        {(!(isBeforeAfter || isBaselineCapture) || continuing) && (
           <TextField
             className={classes.rightSide}
             inputProps={{ className: classes.urlTextArea }}
@@ -274,7 +282,7 @@ export default ({
 
         <FormControlLabel
           className={classes.beforeAfterSwitch}
-          disabled={typeCode != 'manual'}
+          disabled={typeCode != 'manual' || isBaselineCapture}
           control={
             <Switch
               name="beforeAfter"
@@ -286,6 +294,22 @@ export default ({
             />
           }
           label="Before / After?"
+        />
+
+        <FormControlLabel
+          className={classes.baselineSwitch}
+          disabled={typeCode != 'manual' || isBeforeAfter}
+          control={
+            <Switch
+              name="baseline"
+              checked={isBaselineCapture}
+              onChange={(_, val) => {
+                setIsBaselineCapture(val)
+                validate()
+              }}
+            />
+          }
+          label="Baseline Capture?"
         />
 
         <TextField

@@ -91,6 +91,8 @@ function saveJob(job) {
   store.set('type', job.type)
   store.set('typeCode', job.typeCode)
   store.set('beforeAfter', job.beforeAfter)
+  store.set('baselineCapture', job.baselineCapture)
+  store.set('baselineJobId', job.baselineJobId)
   store.set('siteId', job.siteId)
   store.set('leftEnvironmentId', job.leftEnvironmentId)
   store.set('rightEnvironmentId', job.rightEnvironmentId)
@@ -207,6 +209,8 @@ function getJob(projectId, jobId) {
     rightEnvironmentId: store.get('rightEnvironmentId') || null,
     startDate: store.get('startDate'),
     beforeAfter: store.get('beforeAfter') || false,
+    baselineCapture: store.get('baselineCapture') || false,
+    baselineJobId: store.get('baselineJobId') || null,
     type: store.get('type'),
     status: store.get('status'),
     jobSize: store.get('jobSize') || 0,
@@ -248,6 +252,13 @@ function getJobImages(projectId, jobId, width, index) {
   }
 }
 
+function copyJobImage(projectId, fromJobId, toJobId, width, index, side) {
+  const fromImage = getJobImage(projectId, fromJobId, width, index, side)
+  if (fromImage.exists) {
+    fs.copyFileSync(fromImage.path, fromImage.path.replace(fromJobId, toJobId))
+  }
+}
+
 function deleteJob(projectId, jobId) {
   const jobPath = path.join(jobDataDir(projectId), jobId)
   const files = fs.readdirSync(jobPath)
@@ -281,6 +292,7 @@ export {
   saveJobZoomToFit,
   getJobImages,
   getJobImage,
+  copyJobImage,
   deleteJob,
   urlObj
 }
