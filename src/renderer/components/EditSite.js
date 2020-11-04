@@ -160,7 +160,7 @@ export default ({ wizard }) => {
             {autoPaths && (
               <TextField
                 label="Automatic Site Paths Path"
-                helperText="Paths will be collected from this path on one environment"
+                helperText="Paths will be collected from this path on the first environment"
                 fullWidth={true}
                 className={classes.autoPathsPath}
                 variant="outlined"

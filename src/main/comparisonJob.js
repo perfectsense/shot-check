@@ -277,7 +277,7 @@ async function takeShot(
 }
 
 function trimUrlOrObj(s) {
-  if (typeof(s) == 'object') {
+  if (typeof s == 'object') {
     return s
   } else {
     return s.replace(/[\n\r\s]/gm, '')
@@ -288,7 +288,7 @@ function trimList(list) {
   if (!list) {
     return []
   }
-  return list.map((s) => trimUrlOrObj(s)).filter((s) => s != null && (typeof(s) == 'object' || s.length > 0))
+  return list.map((s) => trimUrlOrObj(s)).filter((s) => s != null && (typeof s == 'object' || s.length > 0))
 }
 
 async function cropIfNecessary(firstImage, secondImage, firstImagePath) {
@@ -506,7 +506,7 @@ const comparisonJob = async (job, callback) => {
     for (let i = 0; i < rightUrls.length; i++) {
       for (let breakpoint of job.breakpoints) {
         if (job.baselineJobId) {
-          copyJobImage(projectId, job.baselineJobId, jobId,  breakpoint.width, i, 'left')
+          copyJobImage(projectId, job.baselineJobId, jobId, breakpoint.width, i, 'left')
         }
         await compareShots(projectId, jobId, breakpoint.width, i)
         callback({ progressIndex: ++progressIndex })
@@ -519,7 +519,7 @@ const comparisonJob = async (job, callback) => {
     completionStatus = 'baselineCaptured'
   } else {
     completionStatus = 'unknown'
-    callback({message: 'Unknown completion status...'})
+    callback({ message: 'Unknown completion status...' })
   }
   saveJobCompletionStatus(projectId, jobId, completionStatus)
 
