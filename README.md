@@ -97,7 +97,7 @@ same site on the same environment or a different environment.
 
 For example, Capture:
 ```
-       Site: [Site A]  (Site A Base URL on QA is https://qa.site-a.com/)
+       Site: [Site A]  (Site A Base URL on Prod is https://www.site-a.com/)
 Environment: [Prod]
 
 +--------+
@@ -122,9 +122,9 @@ Environment: [QA]
 +--------+
 | Paths  |
 +--------+
-| /path1 | <-- This page will be combined with the base URL and captured
-| /path2 | <-- This page will be combined with the base URL and captured
-| /path3 | <-- This page will be combined with the base URL and captured
+| /path1 | <-- This page will be combined with the base URL and captured, then compared with /path1 above
+| /path2 | <-- This page will be combined with the base URL and captured, then compared with /path2 above
+| /path3 | <-- This page will be combined with the base URL and captured, then compared with /path3 above
 +--------+
 
 +---------+
