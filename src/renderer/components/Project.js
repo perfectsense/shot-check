@@ -440,6 +440,8 @@ function findBaselineCaptureJobsForSite(projectId, siteId) {
     }
   }
 
+  jobs.sort((l, r) => (l.startDate < r.startDate ? 1 : -1))
+
   return jobs
 }
 
