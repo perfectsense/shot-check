@@ -18,6 +18,7 @@ import {
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import PageviewOutlinedIcon from '@material-ui/icons/PageviewOutlined'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
+import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined'
 import { useSnackbar } from 'notistack'
 import open from 'open'
 import * as path from 'path'
@@ -91,12 +92,9 @@ const JobTableRow = ({ job, setJobs, toDelete, setToDelete }) => {
       <TableCell>{job.leftUrls ? job.leftUrls.length : '-'}</TableCell>
       <TableCell>{job.duration ? formatDuration(job.duration) : '-'}</TableCell>
       <TableCell>
-        {matchSummary
-        ? (Math.min(Math.round((matchSummary / job.matchThreshold * 100)), 100)) + '%'
-        : '-'
-      }
+        {matchSummary ? Math.min(Math.round((matchSummary / job.matchThreshold) * 100), 100) + '%' : '-'}
       </TableCell>
-      <TableCell width="1">
+      <TableCell width="1" align="right">
         <JobActionButtons job={job} setJobs={setJobs} />
       </TableCell>
       <TableCell width="1">
@@ -111,6 +109,7 @@ const JobActionButtons = ({ job, setJobs }) => {
   const projectId = job.projectId || '_'
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
+  const dataDir = path.join(getUserDataDir(), 'jobs', projectId, job.jobId)
 
   const handleDelete = () => {
     setConfirmDeleteOpen(true)
@@ -123,6 +122,10 @@ const JobActionButtons = ({ job, setJobs }) => {
       setJobs(jobs)
       updateProjectStats(job.projectId)
     })
+  }
+
+  const handleOpenDirectory = () => {
+    open(dataDir)
   }
 
   const copyJob = () => {
@@ -147,12 +150,10 @@ const JobActionButtons = ({ job, setJobs }) => {
       )}
 
       {showCompare && (
-        <Button onClick={() => history.push(`/baseline-comparison/${projectId}/${job.jobId}`)}>
-          Compare
-        </Button>
+        <Button onClick={() => history.push(`/baseline-comparison/${projectId}/${job.jobId}`)}>Compare</Button>
       )}
 
-      {(!showContinue && !showCompare) && <Button onClick={copyJob}>Copy</Button>}
+      {!showContinue && !showCompare && <Button onClick={copyJob}>Copy</Button>}
       <Button onClick={handleDelete} color="secondary">
         Delete
       </Button>
@@ -167,6 +168,9 @@ const JobActionButtons = ({ job, setJobs }) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Button onClick={handleOpenDirectory} textSecondary="Open">
+        <FolderOpenOutlinedIcon />
+      </Button>
     </ButtonGroup>
   )
 }
