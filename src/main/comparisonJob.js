@@ -168,10 +168,11 @@ async function pageClickSelectors(page, selectors) {
 
 async function pageExecuteJavaScript(page, scriptText) {
   if (scriptText) {
-    console.log('Executing ', scriptText)
-    await page.evaluate((scriptText) => {
-      eval(scriptText)
+    console.log('Executing ', scriptText, new Date().toLocaleTimeString())
+    await page.evaluate(async (scriptText) => {
+      await eval(scriptText)
     }, scriptText)
+    console.log('Executed ', scriptText, new Date().toLocaleTimeString())
   }
 }
 
@@ -197,6 +198,7 @@ async function takeShot(
   const page = await browser.newPage()
 
   await page.exposeFunction('shotCheckMessageCallback', messageCallback)
+  await page.exposeFunction('shotCheckSleep', sleep)
 
   if (spoofUrl) {
     const spoofPieces = spoofUrl.split('/')
