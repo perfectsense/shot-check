@@ -26,7 +26,6 @@ resume. The Shot Check Tool will capture screenshots again and compare the
 before and after screenshots. For example:
 
 ```
-
        Site: [Site A]  (Site A Base URL on QA is https://qa.site-a.com/)
 Environment: [QA]
 
@@ -91,3 +90,44 @@ Environment: [Prod]   (Prod Verify URL is https://verify.site-a.com/)
 Behind the scenes, [Puppeteer](https://github.com/puppeteer/puppeteer) is used
 to capture screenshots, and [PixelMatch](https://github.com/mapbox/pixelmatch)
 is used to compare.
+
+5) Baseline Capture and Compare. Similar to Before and After, capture a set of
+screenshots to establish a baseline, then capture again and again using the
+same site on the same environment or a different environment. 
+
+For example, Capture:
+```
+       Site: [Site A]  (Site A Base URL on QA is https://qa.site-a.com/)
+Environment: [Prod]
+
++--------+
+| Paths  |
++--------+
+| /path1 | <-- This page will be combined with the base URL and captured
+| /path2 | <-- This page will be combined with the base URL and captured
+| /path3 | <-- This page will be combined with the base URL and captured
++--------+
+
++---------+
+| Capture |
++---------+
+```
+
+Then Compare multiple times:
+```
+       Site: [Site A]  (Site A Base URL on QA is https://qa.site-a.com/)
+Environment: [QA]
+   Baseline: [Baseline Comparison of Prod]
+
++--------+
+| Paths  |
++--------+
+| /path1 | <-- This page will be combined with the base URL and captured
+| /path2 | <-- This page will be combined with the base URL and captured
+| /path3 | <-- This page will be combined with the base URL and captured
++--------+
+
++---------+
+| Compare |
++---------+
+```

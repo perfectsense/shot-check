@@ -18,9 +18,11 @@ import AssignmentIcon from '@material-ui/icons/Assignment'
 import HelpIcon from '@material-ui/icons/Help'
 import SwapVertIcon from '@material-ui/icons/SwapVert'
 import clsx from 'clsx'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useHistory, useParams } from 'react-router-dom'
+import { getJob, getJobIds } from '../../common/ComparisonResultStore'
 import { getEnvironments, getEnvironmentSiteUrl, getProject, getSites } from '../../common/ConfigurationStore'
+import { formatDate } from '../../common/FormatingUtils'
 import Footer from './Footer'
 import Header from './Header'
 
@@ -28,7 +30,7 @@ const useStyles = makeStyles({
   main: {
     display: 'grid',
     gridTemplateColumns: '1fr min-content min-content min-content 1fr',
-    gridTemplateRows: 'min-content'
+    gridTemplateRows: 'min-content min-content'
   },
   card: {
     display: 'grid',
@@ -47,13 +49,24 @@ const useStyles = makeStyles({
     justifyContent: 'center' // or flex-end
   },
   first: {
-    gridColumn: '2'
+    gridColumn: '2',
+    gridRow: '1'
   },
   second: {
-    gridColumn: '3'
+    gridColumn: '3',
+    gridRow: '1'
   },
   third: {
-    gridColumn: '4'
+    gridColumn: '4',
+    gridRow: '1'
+  },
+  fourth: {
+    gridColumn: '2',
+    gridRow: '2'
+  },
+  fifth: {
+    gridColumn: '3',
+    gridRow: '2'
   },
   titleWithToolTip: {
     display: 'grid',
@@ -140,6 +153,27 @@ const EnvironmentPicker = ({ disabled, environments, environmentId, setEnvironme
       idFn={(e) => e.environmentId}
       labelFn={(e) => e.name}
       helperText={helperText || 'No URL for selected site'}
+    />
+  )
+}
+
+const JobPicker = ({ name, disabled, jobs, jobId, setJobId }) => {
+  const classes = useStyles()
+
+  const selectedJobId = jobs.find((j) => j.jobId == jobId) ? jobId : ''
+
+  const helperText = selectedJobId && formatDate(jobs.find((j) => j.jobId == selectedJobId).startDate)
+
+  return (
+    <Picker
+      disabled={disabled}
+      name={name}
+      value={selectedJobId}
+      values={jobs}
+      setValue={setJobId}
+      idFn={(e) => e.jobId}
+      labelFn={(e) => e.name}
+      helperText={helperText}
     />
   )
 }
@@ -396,6 +430,153 @@ const VerifyCard = ({ project, className, sites, environments }) => {
   )
 }
 
+function findBaselineCaptureJobsForSite(projectId, siteId) {
+  const jobIds = getJobIds(projectId)
+  const jobs = []
+  for (let jobId of jobIds) {
+    const job = getJob(projectId, jobId)
+    if (job.baselineCapture && job.siteId == siteId) {
+      jobs.push(job)
+    }
+  }
+
+  return jobs
+}
+
+const BaselineCaptureCard = ({ project, className, sites, environments }) => {
+  const availableSites = sites.filter((s) => environmentsWithSiteUrl(environments, s).length > 0)
+  const classes = useStyles()
+  const history = useHistory()
+  const [siteId, setSiteId] = useState(() => sites && sites.length > 0 && sites[0].siteId)
+
+  const site = siteId && sites.find((s) => s.siteId == siteId)
+
+  const availableEnvironments = site
+    ? environments.filter((e) => getEnvironmentSiteUrl(project.projectId, e.environmentId, site.siteId))
+    : environments
+
+  const [environmentId, setEnvironmentId] = useState(
+    availableEnvironments && availableEnvironments.length > 0 && availableEnvironments[0].environmentId
+  )
+  if (environmentId && !availableEnvironments.find((e) => e.environmentId == environmentId)) {
+    setEnvironmentId(null)
+  }
+
+  const disabled = availableSites.length < 1 || environments.length < 1
+  const valid = environmentId && siteId
+
+  return (
+    <Card className={clsx(classes.card, className)}>
+      <CardHeader
+        className={classes.cardHeader}
+        title={
+          <TitleWithHelpToolTip
+            title="Baseline Capture"
+            toolTip="Baseline Capture. Select an environment and site and provide one list of paths. The tool will capture screenshots and then finish. Deploy a new build of the site or make other changes, then come back to the tool and capture again to compare with the results as many times as you need."
+          />
+        }
+      />
+      <CardContent className={classes.cardContent}>
+        <Typography></Typography>
+        <SitePicker disabled={disabled} siteId={siteId} setSiteId={setSiteId} sites={availableSites} />
+        <EnvironmentPicker
+          disabled={disabled}
+          selectedSite={site}
+          environmentId={environmentId}
+          setEnvironmentId={setEnvironmentId}
+          environments={availableEnvironments}
+        />
+      </CardContent>
+      <CardActions className={classes.cardActions}>
+        <Button
+          disableElevation
+          disabled={disabled || !valid}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => history.push(`/baseline-capture/${project.projectId}/${siteId}/${environmentId}`)}
+        >
+          Next
+        </Button>
+      </CardActions>
+    </Card>
+  )
+}
+
+const BaselineCompareCard = ({ project, className, sites, environments }) => {
+  const availableSites = sites.filter((s) => environmentsWithSiteUrl(environments, s).length > 0)
+  const classes = useStyles()
+  const history = useHistory()
+  const [siteId, setSiteId] = useState(() => sites && sites.length > 0 && sites[0].siteId)
+  const [jobs, setJobs] = useState(() => [])
+  const [jobId, setJobId] = useState(() => null)
+
+  const site = siteId && sites.find((s) => s.siteId == siteId)
+
+  const availableEnvironments = site
+    ? environments.filter((e) => getEnvironmentSiteUrl(project.projectId, e.environmentId, site.siteId))
+    : environments
+
+  const [environmentId, setEnvironmentId] = useState(
+    availableEnvironments && availableEnvironments.length > 0 && availableEnvironments[0].environmentId
+  )
+  if (environmentId && !availableEnvironments.find((e) => e.environmentId == environmentId)) {
+    setEnvironmentId(null)
+  }
+
+  useEffect(() => {
+    console.log('Selected a site: ', siteId)
+    const jobs = findBaselineCaptureJobsForSite(project.projectId, siteId)
+    setJobs(jobs)
+    if (jobs.length > 0) {
+      setJobId(jobs[0].jobId)
+    } else {
+      setJobId(null)
+    }
+  }, [siteId, setSiteId])
+
+  const disabled = availableSites.length < 1 || environments.length < 1 || jobs.length < 1
+  const valid = environmentId && siteId && jobId
+
+  return (
+    <Card className={clsx(classes.card, className)}>
+      <CardHeader
+        className={classes.cardHeader}
+        title={
+          <TitleWithHelpToolTip
+            title="Baseline Comparison"
+            toolTip="Baseline Comparison. Select an environment, site, and previous baseline capture. The tool will capture screenshots and compare them to the baseline."
+          />
+        }
+      />
+      <CardContent className={classes.cardContent}>
+        <Typography></Typography>
+        <SitePicker disabled={disabled} siteId={siteId} setSiteId={setSiteId} sites={availableSites} />
+        <EnvironmentPicker
+          disabled={disabled}
+          selectedSite={site}
+          environmentId={environmentId}
+          setEnvironmentId={setEnvironmentId}
+          environments={availableEnvironments}
+        />
+        <JobPicker name="Baseline" disabled={disabled} jobId={jobId} setJobId={setJobId} jobs={jobs} />
+      </CardContent>
+      <CardActions className={classes.cardActions}>
+        <Button
+          disableElevation
+          disabled={disabled || !valid}
+          size="small"
+          variant="contained"
+          color="primary"
+          onClick={() => history.push(`/baseline-comparison/${project.projectId}/${jobId}/${siteId}/${environmentId}`)}
+        >
+          Next
+        </Button>
+      </CardActions>
+    </Card>
+  )
+}
+
 export default () => {
   const { projectId } = useParams()
   const classes = useStyles()
@@ -422,6 +603,10 @@ export default () => {
         />
 
         <VerifyCard project={project} className={classes.third} sites={sites} environments={environments} />
+
+        <BaselineCaptureCard project={project} className={classes.fourth} sites={sites} environments={environments} />
+
+        <BaselineCompareCard project={project} className={classes.fifth} sites={sites} environments={environments} />
       </main>
       <Footer>
         <Link to={`/comparison-jobs/${projectId}`}>

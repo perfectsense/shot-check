@@ -94,7 +94,7 @@ export default ({
   beforeAfter,
   continuing,
   baselineCapture,
-  baselineJobId: baselineJobId
+  baselineJobId
 }) => {
   const runningJobContext = useContext(RunningJobContext)
   const { enqueueSnackbar } = useSnackbar()
@@ -151,7 +151,7 @@ export default ({
 
   const validate = () => {
     let localLeftSideError
-    if (((isBaselineCapture || isBeforeAfter) && !continuing)) {
+    if ((isBaselineCapture || isBeforeAfter) && !continuing) {
       setRightSideError(false)
     } else {
       localLeftSideError = leftSideUrlsList.filter((s) => s).length != rightSideUrlsList.filter((s) => s).length
@@ -210,7 +210,7 @@ export default ({
       leftEnvironmentId: job.leftEnvironmentId || null,
       rightEnvironmentId: job.rightEnvironmentId || null,
       typeCode: job.typeCode,
-      leftUrls: (continuing || baselineJobId) ? job.leftUrls : leftSideUrlsList.filter((s) => s),
+      leftUrls: continuing || baselineJobId ? job.leftUrls : leftSideUrlsList.filter((s) => s),
       rightUrls: rightSideUrlsList.filter((s) => s),
       ignoreSelectors: ignoreSelectorsList.filter((s) => s),
       clickSelectors: clickSelectorsList.filter((s) => s),
@@ -244,7 +244,7 @@ export default ({
         />
 
         <TextField
-          disabled={continuing || baselineJobId}
+          disabled={continuing || Boolean(baselineJobId)}
           className={(isBaselineCapture || isBeforeAfter) && !continuing ? classes.bothSides : classes.leftSide}
           inputProps={{ className: classes.urlTextArea }}
           label="URLs (one per line)"

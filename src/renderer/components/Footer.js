@@ -126,6 +126,26 @@ const PreviousJob = ({ jobId, projectId }) => {
         </Button>
       </Box>
     )
+  } else if (job.completionStatus == 'baselineCaptured') {
+    let url
+    if (job.siteId && job.leftEnvironmentId) {
+      url = `/baseline-comparison/${projectId || '_'}/${jobId}/${job.siteId}/${job.leftEnvironmentId}`
+    } else {
+      url = `/baseline-comparison/${projectI || '_'}/${jobId}`
+    }
+
+    return (
+      <Box className={classes.previousJob} width="100%">
+        <Button
+          disableElevation
+          color="primary"
+          className={classes.previousJobButton}
+          onClick={() => history.push(url)}
+        >
+          Baseline Captured: Compare
+        </Button>
+      </Box>
+    )
   } else {
     return <Box></Box>
   }

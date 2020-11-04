@@ -4,6 +4,7 @@ import React from 'react'
 import { HashRouter, Route } from 'react-router-dom'
 import '../style.less'
 import BaselineComparison from './BaselineComparison'
+import BaselineCapture from './BaselineCapture'
 import BeforeAndAfterComparison from './BeforeAndAfterComparison'
 import ComparisonJob from './ComparisonJob'
 import ComparisonJobs from './ComparisonJobs'
@@ -109,7 +110,15 @@ export default () => {
             <VerifyComparison />
           </Route>
 
+          <Route exact path="/baseline-capture/:projectId/:siteId/:environmentId">
+            <BaselineCapture />
+          </Route>
+
           <Route exact path="/baseline-comparison/:projectId/:jobId">
+            <BaselineComparison />
+          </Route>
+
+          <Route exact path="/baseline-comparison/:projectId/:jobId/:siteId/:environmentId">
             <BaselineComparison />
           </Route>
 
