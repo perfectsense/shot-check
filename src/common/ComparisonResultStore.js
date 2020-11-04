@@ -42,7 +42,11 @@ const getJobIds = (projectId) => {
   for (let filename of files) {
     let file = fs.statSync(path.join(dir, filename))
     if (file.isDirectory()) {
-      jobs.push(filename)
+      try {
+        fs.accessSync(path.join(dir, filename, 'details.yml'), fs.constants.R_OK)
+        jobs.push(filename)
+      } catch (error) {
+      }
     }
   }
   return jobs
