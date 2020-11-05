@@ -14,11 +14,13 @@ import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
 import { Link, Redirect, useHistory, useParams } from 'react-router-dom'
 import {
-  createProject,
+  saveProject,
   deleteProject,
   getProject,
   getProjectAuth,
-  saveProjectAuth
+  saveProjectAuth,
+  migrateProjectConfigToExternal,
+  migrateProjectConfigToInternal
 } from '../../common/ConfigurationStore'
 import generateUUID from '../../common/generateUUID'
 import Footer from './Footer'
@@ -89,7 +91,15 @@ export default ({ wizard }) => {
     if (nameError || externalConfigFileError) {
       return
     }
-    createProject(id, name, externalConfig ? externalConfigFile : null)
+    if (projectId) {
+      const existingProject = getProject(projectId)
+      if (!existingProject.configPath && externalConfig) {
+        migrateProjectConfigToExternal(projectId, externalConfigFile)
+      } else if (existingProject.configPath && !externalConfig) {
+        migrateProjectConfigToInternal(projectId)
+      }
+    }
+    saveProject(id, name, externalConfig ? externalConfigFile : null)
     if (wizard) {
       setRedirect(`/wizard-site/${id}`)
     } else {

@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack'
 import React, { useState } from 'react'
 import { Link, Redirect, useParams } from 'react-router-dom'
 import {
-  createEnvironment,
+  saveEnvironment,
   getEnvironment,
   getEnvironmentAuth,
   getEnvironmentSiteUrl,
@@ -144,7 +144,7 @@ export default ({ wizard }) => {
       setNameError(true)
       return
     }
-    createEnvironment(projectId, id, name)
+    saveEnvironment(projectId, id, name)
 
     const auth = {
       username: authUsername,

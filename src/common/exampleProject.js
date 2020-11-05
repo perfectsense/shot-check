@@ -1,11 +1,4 @@
-import {
-  createEnvironment,
-  createProject,
-  getProjects,
-  saveSite,
-  setEnvironmentSiteUrl,
-  setEnvironmentVerifyUrl
-} from './ConfigurationStore'
+import { saveEnvironment, saveProject, getProjects, saveSite, setEnvironmentSiteUrl } from './ConfigurationStore'
 
 function initializeExampleProject() {
   console.log('Initializing example project...')
@@ -19,7 +12,7 @@ function initializeExampleProject() {
   const uatEnvironmentId = '00000000-0000-0000-0002-000000000001'
   const prodEnvironmentId = '00000000-0000-0000-0002-000000000002'
 
-  createProject(projectId, 'My Example Project', null)
+  saveProject(projectId, 'My Example Project', null)
   saveSite(projectId, site1Id, 'Example', false, null, ['/'], [], [], '', '')
   saveSite(projectId, site2Id, 'Time.gov', false, null, ['/', '/?t=24'], [], [], '', '')
   saveSite(projectId, site3Id, 'Brightspot', false, null, ['/', '/products', '/solutions', '/about-us'], [], [], '', '')
@@ -35,17 +28,15 @@ function initializeExampleProject() {
     '',
     ''
   )
-  createEnvironment(projectId, qaEnvironmentId, 'QA')
-  createEnvironment(projectId, uatEnvironmentId, 'UAT')
-  createEnvironment(projectId, prodEnvironmentId, 'Production')
+  saveEnvironment(projectId, qaEnvironmentId, 'QA')
+  saveEnvironment(projectId, uatEnvironmentId, 'UAT')
+  saveEnvironment(projectId, prodEnvironmentId, 'Production')
   setEnvironmentSiteUrl(projectId, qaEnvironmentId, site1Id, 'https://www.example.net')
   setEnvironmentSiteUrl(projectId, uatEnvironmentId, site1Id, 'https://www.example.org')
   setEnvironmentSiteUrl(projectId, prodEnvironmentId, site1Id, 'https://www.example.com')
   setEnvironmentSiteUrl(projectId, prodEnvironmentId, site2Id, 'https://www.time.gov')
   setEnvironmentSiteUrl(projectId, prodEnvironmentId, site3Id, 'https://www.brightspot.com')
   setEnvironmentSiteUrl(projectId, prodEnvironmentId, site4Id, 'https://www.inspire-confidence.com')
-
-  console.log('Initialized example project.')
 }
 
 function initializeExampleProjectIfNecessary() {

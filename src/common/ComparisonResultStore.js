@@ -45,8 +45,7 @@ const getJobIds = (projectId) => {
       try {
         fs.accessSync(path.join(dir, filename, 'details.yml'), fs.constants.R_OK)
         jobs.push(filename)
-      } catch (error) {
-      }
+      } catch (error) {}
     }
   }
   return jobs

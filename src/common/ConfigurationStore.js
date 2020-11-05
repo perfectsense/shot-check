@@ -1,6 +1,7 @@
 import Store from 'electron-store'
 import * as yaml from 'js-yaml'
 import * as path from 'path'
+import * as fs from 'fs'
 import { deleteJob, getJobIds, getJobs } from './ComparisonResultStore'
 
 const yamlOptions = {
@@ -80,8 +81,10 @@ function getProject(projectId) {
   }
 }
 
-function createProject(projectId, name, configPath) {
+function saveProject(projectId, name, configPath) {
+  const project = getProject(projectId) || {}
   projectsStore.set('projects.' + projectId, {
+    ...project,
     projectId: projectId,
     name: name,
     configPath: configPath
@@ -90,6 +93,40 @@ function createProject(projectId, name, configPath) {
 
 function getProjects() {
   return valuesOrEmpty(projectsStore.get('projects'))
+}
+
+function migrateProjectConfigToExternal(projectId, externalConfigFile) {
+  const store = projectStore(projectId)
+  const project = getProject(projectId)
+  saveProject(projectId, project.name, externalConfigFile)
+  const newStore = projectStore(projectId)
+  let exists
+  try {
+    fs.accessSync(externalConfigFile, fs.constants.R_OK)
+    exists = true
+  } catch (error) {
+    exists = false
+  }
+  if (!exists) {
+    newStore.store = store.store
+  }
+}
+
+function migrateProjectConfigToInternal(projectId) {
+  const store = projectStore(projectId)
+  const project = getProject(projectId)
+  saveProject(projectId, project.name, null)
+  const newStore = projectStore(projectId)
+  let exists
+  try {
+    fs.accessSync(newStore.path, fs.constants.R_OK)
+    exists = true
+  } catch (error) {
+    exists = false
+  }
+  if (!exists) {
+    newStore.store = store.store
+  }
 }
 
 function deleteProject(projectId) {
@@ -104,8 +141,10 @@ function deleteProject(projectId) {
 }
 
 // Environments
-function createEnvironment(projectId, environmentId, name) {
+function saveEnvironment(projectId, environmentId, name) {
+  const environment = getEnvironment(projectId, environmentId) || {}
   projectStore(projectId).set('environments.' + environmentId, {
+    ...environment,
     name: name
   })
 }
@@ -419,11 +458,11 @@ async function updateProjectStats(projectId) {
 
 export {
   getProject,
-  createProject,
+  saveProject,
   getProjects,
   deleteProject,
   getEnvironment,
-  createEnvironment,
+  saveEnvironment,
   getEnvironments,
   deleteEnvironment,
   setEnvironmentSiteUrl,
@@ -449,5 +488,7 @@ export {
   getProjectAuth,
   getEnvironmentAuth,
   getEnvironmentOrProjectAuth,
-  updateProjectStats
+  updateProjectStats,
+  migrateProjectConfigToExternal,
+  migrateProjectConfigToInternal
 }
