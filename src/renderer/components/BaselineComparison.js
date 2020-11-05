@@ -12,11 +12,10 @@ export default () => {
   const { projectId, jobId, siteId, environmentId } = useParams()
   const [urlsFetched, setUrlsFetched] = useState(false)
   const [rightUrls, setRightUrls] = useState(() => [])
-  const [job, setJob] = useState(null)
+  const [job, setJob] = useState(() => getJob(projectId, jobId))
   const [name, setName] = useState(null)
 
   useEffect(() => {
-    const job = getJob(projectId, jobId)
     if (siteId && environmentId) {
       const site = getSite(projectId, siteId)
       const environment = getEnvironment(projectId, environmentId)
@@ -29,9 +28,6 @@ export default () => {
 
   if (siteId && environmentId) {
     useEffect(() => {
-      const job = getJob(projectId, jobId)
-      setJob(job)
-
       const leftUrlPrefix = getEnvironmentSiteUrl(projectId, job.leftEnvironmentId, job.siteId)
       const rightUrlPrefix = getEnvironmentSiteUrl(projectId, environmentId, siteId)
       setRightUrls(job.leftUrls.map((u) => u.url.replace(leftUrlPrefix, rightUrlPrefix)))

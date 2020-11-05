@@ -435,7 +435,7 @@ function findBaselineCaptureJobsForSite(projectId, siteId) {
   const jobs = []
   for (let jobId of jobIds) {
     const job = getJob(projectId, jobId)
-    if (job.baselineCapture && job.siteId == siteId) {
+    if (job && job.baselineCapture && job.siteId == siteId) {
       jobs.push(job)
     }
   }
@@ -527,7 +527,6 @@ const BaselineCompareCard = ({ project, className, sites, environments }) => {
   }
 
   useEffect(() => {
-    console.log('Selected a site: ', siteId)
     const jobs = findBaselineCaptureJobsForSite(project.projectId, siteId)
     setJobs(jobs)
     if (jobs.length > 0) {
