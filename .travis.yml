@@ -1,21 +1,18 @@
-branches:
-  include: feature/travis
-
 language: node_js
 node_js: "14.7.0"
 
 jobs:
   include:
     - stage: Deploy Windows & Mac
-      # if: tag IS present
+      if: tag IS present
       os: osx
       osx_image: xcode11
       script:
-        - yarn dist --mac --win
+        - yarn publish --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
-    - stage: Deploy linux
-      # if: tag IS present
+    - stage: Deploy Linux
+      if: tag IS present
       os: linux
       script:
-        - yarn dist
+        - yarn publish
