@@ -23,7 +23,6 @@ export default () => {
     } else {
       setName(job.name)
     }
-    const site = getSite(projectId, siteId)
   }, [projectId, siteId, environmentId])
 
   if (siteId && environmentId) {
@@ -35,8 +34,10 @@ export default () => {
       setUrlsFetched(true)
     }, [siteId, environmentId])
   } else {
-    setRightUrls(job.leftUrls.map((u) => u.url))
-    setUrlsFetched(true)
+    useEffect(() => {
+      setRightUrls(job.leftUrls.map((u) => u.url))
+      setUrlsFetched(true)
+    }, [job])
   }
 
   return (
