@@ -24,7 +24,11 @@
     "printWidth": 120
   },
   "build": {
-    "asar": false
+    "asar": false,
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    }
   },
   "dependencies": {
     "puppeteer": "5.3.1",
