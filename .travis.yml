@@ -15,13 +15,8 @@ jobs:
     - stage: Deploy Linux
       if: tag IS present
       os: linux
+      dist: xenial
       script:
+        - sudo snap install snapcraft --classic
         - yarn config set version-git-tag false && yarn version --new-version ${TRAVIS_TAG/v/}
         - yarn release
-
-cache:
-  directories:
-    - node_modules
-    - $HOME/.cache/electron
-    - $HOME/.cache/electron-builder
-    - $HOME/.npm/_prebuilds
