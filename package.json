@@ -2,13 +2,14 @@
   "name": "shot-check",
   "productName": "Shot Check",
   "author": "Brightspot",
-  "version": "0.3.1",
+  "version": "0.0.0-snapshot",
   "license": "MIT",
   "scripts": {
     "format": "prettier-eslint --write 'src/**/*.js'",
     "dev": "yarn format && electron-webpack dev",
     "compile": "prettier-eslint --list-different 'src/**/*.js' && electron-webpack",
-    "dist": "yarn compile && electron-builder",
+    "release": "yarn compile && electron-builder -p always",
+    "dist": "yarn compile && electron-builder -p never",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
   },
   "electronWebpack": {
@@ -23,11 +24,20 @@
     "printWidth": 120
   },
   "build": {
-    "asar": false
+    "appId": "com.psddev.shot-check",
+    "asar": false,
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    }
   },
   "dependencies": {
-    "source-map-support": "0.5.19",
-    "puppeteer": "5.3.1"
+    "electron-updater": "^4.3.5",
+    "puppeteer": "5.3.1",
+    "source-map-support": "0.5.19"
   },
   "devDependencies": {
     "@babel/core": "7.11.6",

@@ -40,7 +40,7 @@ function initializeExampleProject() {
 }
 
 function initializeExampleProjectIfNecessary() {
-  if ((getProjects().length = 0)) {
+  if (getProjects().length == 0) {
     initializeExampleProject()
   }
 }

@@ -1,0 +1,12 @@
+language: node_js
+node_js: "14.7.0"
+
+jobs:
+  include:
+    - stage: Deploy Windows & Mac
+      if: tag IS present
+      os: osx
+      osx_image: xcode11
+      script:
+        - yarn config set version-git-tag false && yarn version --new-version ${TRAVIS_TAG/v/}
+        - yarn release --mac --win

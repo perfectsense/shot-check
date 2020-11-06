@@ -100,12 +100,17 @@ function getChromiumExecPath() {
   }
   // This only works because package.json has `build/asar: false`
   return puppeteer.executablePath()
-  // return puppeteer.executablePath().replace('app.asar', 'app.asar.unpacked')
 }
 
 async function openBrowser() {
   const chromiumPath = getChromiumExecPath()
   const chromiumPathOptions = { executablePath: chromiumPath }
+
+  try {
+    fs.accessSync(chromiumPath, fs.constants.R_OK)
+  } catch (error) {
+    throw 'Chrome executable not found! Update the Chrome Path in Preferences (gear icon)'
+  }
 
   /*
   const chromeArgs = [
@@ -483,7 +488,8 @@ const comparisonJob = async (job, callback) => {
     }
   } catch (error) {
     console.log(error)
-    callback({ message: 'Error: ' + error.message, status: 'ready' })
+    const message = typeof error == 'string' ? error : error.message
+    callback({ message: 'Error: ' + message, status: 'ready' })
     return
   } finally {
     if (browser) {
