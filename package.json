@@ -8,6 +8,7 @@
     "format": "prettier-eslint --write 'src/**/*.js'",
     "dev": "yarn format && electron-webpack dev",
     "compile": "prettier-eslint --list-different 'src/**/*.js' && electron-webpack",
+    "publish": "yarn compile && electron-builder -p always",
     "dist": "yarn compile && electron-builder",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
   },
