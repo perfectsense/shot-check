@@ -8,7 +8,7 @@ jobs:
       os: osx
       osx_image: xcode11
       script:
-        - yarn version --new-version ${TRAVIS_TAG/v/}
+        - yarn config set version-git-tag false && yarn version --new-version ${TRAVIS_TAG/v/}
         - yarn release --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
@@ -16,7 +16,7 @@ jobs:
       if: tag IS present
       os: linux
       script:
-        - yarn version --new-version ${TRAVIS_TAG/v/}
+        - yarn config set version-git-tag false && yarn version --new-version ${TRAVIS_TAG/v/}
         - yarn release
 
 cache:
