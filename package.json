@@ -24,13 +24,18 @@
     "printWidth": 120
   },
   "build": {
+    "appId": "com.psddev.shot-check",
     "asar": false,
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
     "publish": {
       "provider": "github",
       "releaseType": "release"
     }
   },
   "dependencies": {
+    "electron-updater": "^4.3.5",
     "puppeteer": "5.3.1",
     "source-map-support": "0.5.19"
   },

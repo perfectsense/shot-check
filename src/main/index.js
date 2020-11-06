@@ -7,6 +7,7 @@ import * as os from 'os'
 import ipcListeners from './ipc/ipcListeners'
 import { isDevelopment } from '../common/appConfig'
 import { initializeExampleProjectIfNecessary } from '../common/exampleProject'
+import { autoUpdater } from 'electron-updater'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
@@ -78,6 +79,10 @@ app.on('ready', () => {
   initializeExampleProjectIfNecessary()
   mainWindow = createMainWindow()
   ipcListeners()
+
+  if (!isDevelopment) {
+    autoUpdater.checkForUpdates()
+  }
 })
 
 // handle file:// URLs
@@ -86,4 +91,30 @@ app.whenReady().then(() => {
     const pathname = decodeURI(request.url.replace('file:///', ''))
     callback(pathname)
   })
+})
+
+// Auto updater
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for Update. . .')
+})
+
+autoUpdater.on('update-available', (info) => {
+  console.log('Update Available!')
+})
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update Not Available!')
+})
+
+autoUpdater.on('error', (err) => {
+  console.log('Auto Updater error!', err)
+})
+
+autoUpdater.on('download-progress', (progressObj) => {
+  console.log('Download Progress:', progressObj)
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update Downloaded!', info)
+  autoUpdater.quitAndInstall()
 })
