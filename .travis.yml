@@ -8,14 +8,14 @@ jobs:
       os: osx
       osx_image: xcode11
       script:
-        - yarn publish --mac --win
+        - yarn release --mac --win
       before_cache:
         - rm -rf $HOME/.cache/electron-builder/wine
     - stage: Deploy Linux
       if: tag IS present
       os: linux
       script:
-        - yarn publish
+        - yarn release
 
 cache:
   directories:

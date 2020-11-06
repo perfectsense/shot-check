@@ -2,13 +2,13 @@
   "name": "shot-check",
   "productName": "Shot Check",
   "author": "Brightspot",
-  "version": "0.3.1",
+  "version": "0.0.0-snapshot",
   "license": "MIT",
   "scripts": {
     "format": "prettier-eslint --write 'src/**/*.js'",
     "dev": "yarn format && electron-webpack dev",
     "compile": "prettier-eslint --list-different 'src/**/*.js' && electron-webpack",
-    "publish": "yarn compile && electron-builder -p always",
+    "release": "yarn compile && electron-builder -p always",
     "dist": "yarn compile && electron-builder",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
   },
