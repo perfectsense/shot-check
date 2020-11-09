@@ -164,13 +164,13 @@ Chrome executable path, and other global settings.
 
 # Advanced Usage
 
-## Ignore CSS Selectors
+### Ignore CSS Selectors
 
 If a certain element of a site (such as an ad) is very dynamic, it will cause
 false negatives in your comparisons. Use an Ignore CSS Selector to simply
 remove those elements from the DOM before the screenshot is captured.
 
-## Click CSS Selectors
+### Click CSS Selectors
 
 Some sites present dialogs that must be clicked to accept cookies or decline to
 subscribe to newsletters, etc. Use a Click CSS Selector to click these elements
@@ -178,7 +178,7 @@ on page load to dismiss the dialog before the screenshot is captured. **Note**:
 If this click causes the browser to navigate to another page, the check will
 fail with an error.
 
-## Execute JavaScript on Page Load or After Auto-Scroll
+### Execute JavaScript on Page Load or After Auto-Scroll
 
 If ignore and click do not cover your requirements, execute any custom
 JavaScript you want after the page is loaded or after auto-scroll has been
@@ -186,7 +186,7 @@ completed. The method `shotCheckSleep(milliseconds)` is available in the page
 environment for your convenience. Use this if a site uses an animation or
 loading screen that cannot otherwise be skipped.
 
-## Automatic Site Paths
+### Automatic Site Paths
 
 If it is more convenient for you and your team to maintain a list of URLs that
 should be part of regression tests on the site rather than a shared
