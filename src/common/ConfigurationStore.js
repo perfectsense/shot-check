@@ -158,8 +158,8 @@ function getEnvironment(projectId, environmentId) {
     projectId: projectId,
     environmentId: environmentId,
     name: environment.name,
-    verifyUrl: environment.verifyUrl,
-    siteUrls: environment.siteUrls
+    verifyUrl: environment.verifyUrl || null,
+    siteUrls: environment.siteUrls || []
   }
 }
 

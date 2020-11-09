@@ -155,7 +155,7 @@ export default ({ wizard }) => {
     } else if (auth.password && !auth.username) {
       auth.username = projectAuthUsername
     }
-    saveEnvironmentAuth(projectId, environmentId, auth.username, auth.password)
+    saveEnvironmentAuth(projectId, id, auth.username, auth.password)
 
     let urlOk = true
     Object.keys(envUrls).forEach((siteId) => {
