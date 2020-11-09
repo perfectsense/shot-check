@@ -1,0 +1,60 @@
+
+<!doctype html>
+<html>
+  <head>
+    <title>Example Page Three</title>
+    <style>
+      main {
+        display: grid;
+        grid-template-rows: .3fr min-content 1fr;
+        grid-template-columns: 1fr 300px 1fr;
+        height: 100vh;
+      }
+      .card {
+        grid-row: 2;
+        grid-column: 2;
+      }
+      .card h1 {
+        height: 1.3em;
+      }
+      .card hr {
+        border: solid 4px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <main>
+
+      <div class="card">
+        <h1>Hello World</h1>
+        <img data-placeholder width="300" height="175" />
+        <p>
+          Notice a different image is chosen randomly on every page load.
+          This is to illustrate Shot Check's difference detection.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/geopattern/1.2.3/js/geopattern.min.js"></script>
+    <script type="text/javascript">
+      (function() {
+        document.querySelectorAll('img[data-placeholder]').forEach((item) => {
+          item.src = GeoPattern.generate().toDataUri();
+        });
+      })();
+    </script>
+  </body>
+</html>
