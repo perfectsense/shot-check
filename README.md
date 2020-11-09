@@ -243,4 +243,4 @@ discuss what you would like to change.
 
 # License
 
-[GNU General Public License v3.0](https://github.com/perfectsense/shot-check/blob/main/LICENSE)
+[Apache License 2.0](https://github.com/perfectsense/shot-check/blob/main/LICENSE)
