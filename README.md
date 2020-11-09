@@ -73,7 +73,9 @@ control so your entire team can share!
 
 ### Step 2: Create a Site
 
-A Site is a collection of paths that may be present on one or more Environments.
+A Site is a collection of content represented by paths that are present on one
+or more Environments. A Site does not have a base URL - that is provided by the
+Environment.
 
 ![Create a Site](https://perfectsense.github.io/shot-check/img/create-site.png)
 
@@ -86,10 +88,10 @@ have one or more lower **test** environments and one **production** environment.
 If you're a developer, you may also have a local **development** environment, as
 well.
 
-An Environment has a base URL that, when combined with a Site's list of paths,
-produces a collection of URLs. This list of URLs will be used to run automated checks.
+An Environment has a base URL that, when combined with a Site's collection of paths,
+produces a collection of URLs. This collection of URLs will be used to run automated checks.
 
-Note: An example project is created for you when you start Shot Check for the first
+**Note**: An example project is created for you when you start Shot Check for the first
 time. Use it as an example when creating your own projects.
 
 ## Before and After
@@ -104,7 +106,9 @@ will capture screenshots again and compare the before and after screenshots.
 
 ![Before and After](https://perfectsense.github.io/shot-check/img/before-and-after.png)
 
-When the initial capture is complete, the **Continue** screen is loaded for you.
+When the initial capture is complete, the **Continue** screen is loaded for
+you. Click the "Continue Check" button after your changes have been deployed to
+capture the "after" screenshots and compare.
 
 ![Before and After Screen 2](https://perfectsense.github.io/shot-check/img/before-and-after-2.png)
 
@@ -127,10 +131,10 @@ model](https://en.wikipedia.org/wiki/Blue-green_deployment), you can enter the
 secondary URL prefix (sometimes known as the "verify url") in the production
 environment settings to enable the **Blue/Green Verify** check type.
 
-4) Verify. Select a production environment and a site. Provide one list of
-paths. During a blue/green deployment when both production instances are
-running, the Shot Check Tool will capture screenshots for each path on the
-primary URL and the verify URL and compare.
+Select a production environment and a site. Provide one list of paths. During a
+blue/green deployment when both production instances are running, Shot Check
+will capture screenshots for each path on the primary URL and the verify URL
+and compare.
 
 **Note**: It is not necessary to provide a verify URL for each site, as the
 base URL will be sent as the X-Forwarded-Host header in the request.
