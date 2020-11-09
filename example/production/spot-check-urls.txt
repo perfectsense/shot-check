@@ -1,0 +1,4 @@
+https://perfectsense.github.io/shot-check/example/production/page1.html
+https://perfectsense.github.io/shot-check/example/production/page2.html
+https://perfectsense.github.io/shot-check/example/production/page3.html
+https://perfectsense.github.io/shot-check/example/production/page4.html

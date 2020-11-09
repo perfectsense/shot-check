@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Example Page Two</title>
+    <style>
+      main {
+        display: grid;
+        grid-template-rows: 3em min-content 1fr;
+        grid-template-columns: 1fr 300px 1fr;
+        height: 100vh;
+      }
+      .card {
+        grid-row: 2;
+        grid-column: 2;
+      }
+      .card h1 {
+        height: 1.3em;
+      }
+      .card hr {
+        border: solid 4px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <main>
+
+      <div class="card">
+        <h1>Hello World</h1>
+        <hr />
+        <p>
+          Notice a different greeting is chosen randomly on every page load.
+          This is to illustrate Shot Check's difference detection.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+          ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat. Duis aute irure dolor in
+          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+          culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+
+    </main>
+
+    <script type="text/javascript">
+      (function() {
+        const greetings = ['Hello', 'Hi', 'Howdy', 'Hey There', 'Hola', 'Oi', 'Hallo', 'Ciao', 'Halo', 'Salut', 'Musta', 'Salam', 'Здраво', 'Merhaba', '你好', '您好', 'नमस्ते', 'Olá', 'Здравствуйте', 'Привет', '今日は', '안녕하십니까', '안녕하세요', '안녕', '侬好', '大家好', 'Guten Tag', 'Bonjour'];
+        document.querySelectorAll('.card h1').forEach((item) => {
+          const greeting = Math.floor(Math.random()*greetings.length);
+          item.innerHTML = greetings[greeting] + ' World';
+        });
+      })();
+    </script>
+  </body>
+</html>
