@@ -239,6 +239,7 @@ discuss what you would like to change.
 # Roadmap
 
 * Support for authenticated page requests (paywall) via cookies
+* Add query param and/or custom header to every request (?disableAds=true for example)
 * Improve report view
 * Report export
 * Firefox support
