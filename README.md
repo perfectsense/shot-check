@@ -54,6 +54,8 @@ In this example you can see:
 7. The *right* captured screenshot in the selected browser width.
 8. The detected differences between the left screenshot and the right screenshot.
 
+**Tip**: Use the `j`, `k`, `h`, and `l` keys on your keyboard to navigate to the next / previous result or breakpoint!
+
 ## Setting up a Project
 
 To make Shot Check part of your normal testing process, it is important to

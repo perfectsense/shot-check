@@ -311,12 +311,34 @@ const UrlPairTableRow = ({
   const isOpen = index == openIndex
   const breakpoints = job.breakpoints
   const [activeBreakpoint, setActiveBreakpoint] = useState(
-    () => breakpoints && breakpoints.length && breakpoints[0].width
+    () => breakpoints.length > 0 && 0
   )
   const classes = useStyles()
 
   const leftUrlUrl = leftUrl && leftUrl.url
   const rightUrlUrl = rightUrl && rightUrl.url
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ('l' == e.key) {
+        console.log('got an L')
+        if (activeBreakpoint < breakpoints.length - 1) {
+          setActiveBreakpoint(activeBreakpoint + 1)
+        }
+      } else if ('h' == e.key) {
+        console.log('got an H')
+        if (activeBreakpoint > 0) {
+          setActiveBreakpoint(activeBreakpoint - 1)
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [breakpoints, activeBreakpoint])
 
   const setOpen = (value) => {
     if (value) {
@@ -364,11 +386,11 @@ const UrlPairTableRow = ({
                 key={i}
                 threshold={threshold}
                 breakpoint={w}
-                active={activeBreakpoint == w}
+                active={activeBreakpoint == i}
                 match={matches[w]}
                 onClick={() => {
                   setOpen(true)
-                  setActiveBreakpoint(w)
+                  setActiveBreakpoint(i)
                 }}
               />
             ))}
@@ -378,10 +400,10 @@ const UrlPairTableRow = ({
                 key={i}
                 threshold={threshold}
                 breakpoint={b.width}
-                active={activeBreakpoint == b.width}
+                active={activeBreakpoint == i}
                 onClick={() => {
                   setOpen(true)
-                  setActiveBreakpoint(b.width)
+                  setActiveBreakpoint(i)
                 }}
               />
             ))}
@@ -399,7 +421,7 @@ const UrlPairTableRow = ({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
           <Collapse in={isOpen} timeout="auto" unmountOnExit>
             <ScreenshotTable
-              activeBreakpoint={activeBreakpoint}
+              activeBreakpoint={breakpoints && breakpoints[activeBreakpoint] && breakpoints[activeBreakpoint].width}
               zoom={zoom}
               zoomToFit={zoomToFit}
               job={job}
