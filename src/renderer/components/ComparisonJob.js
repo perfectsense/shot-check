@@ -319,12 +319,10 @@ const UrlPairTableRow = ({
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ('l' == e.key) {
-        console.log('got an L')
         if (activeBreakpoint < breakpoints.length - 1) {
           setActiveBreakpoint(activeBreakpoint + 1)
         }
       } else if ('h' == e.key) {
-        console.log('got an H')
         if (activeBreakpoint > 0) {
           setActiveBreakpoint(activeBreakpoint - 1)
         }
