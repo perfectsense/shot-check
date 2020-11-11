@@ -17,7 +17,7 @@ const useStyles = makeStyles({
   selectorsAndJS: {
     display: 'grid',
     gridTemplateColumns: '0 1fr 1fr 75px 1fr 1fr 0',
-    gridTemplateRows: '2em min-content 2em min-content 2em min-content 2em min-content 5em'
+    gridTemplateRows: '2em min-content 2em min-content 2em min-content 2em min-content 2em min-content 5em'
   },
   ignoreSelectors: {
     gridRow: '2',
@@ -34,7 +34,15 @@ const useStyles = makeStyles({
   afterScrollJavaScript: {
     gridRow: '4',
     gridColumn: '5 / 7'
-  }
+  },
+  queryString: {
+    gridRow: '6',
+    gridColumn: '2 / 4'
+  },
+  requestHeaders: {
+    gridRow: '6',
+    gridColumn: '5 / 7'
+  },
 })
 
 export default ({ wizard }) => {
@@ -51,7 +59,9 @@ export default ({ wizard }) => {
         ignoreSelectors: [],
         clickSelectors: [],
         pageLoadJavaScript: '',
-        afterScrollJavaScript: ''
+        afterScrollJavaScript: '',
+        queryString: '',
+        requestHeaders: []
       }
   )
 
@@ -67,6 +77,8 @@ export default ({ wizard }) => {
   const [clickSelectors, setClickSelectors] = useState(() => site.clickSelectors)
   const [pageLoadJavaScript, setPageLoadJavaScript] = useState(() => site.pageLoadJavaScript)
   const [afterScrollJavaScript, setAfterScrollJavaScript] = useState(() => site.afterScrollJavaScript)
+  const [queryString, setQueryString] = useState(() => site.queryString)
+  const [requestHeaders, setRequestHeaders] = useState(() => site.requestHeaders)
 
   const [redirect, setRedirect] = useState()
   const [nameError, setNameError] = useState(false)
@@ -105,7 +117,9 @@ export default ({ wizard }) => {
       ignoreSelectors,
       clickSelectors,
       pageLoadJavaScript,
-      afterScrollJavaScript
+      afterScrollJavaScript,
+      queryString,
+      requestHeaders
     )
     if (wizard) {
       setRedirect(`/wizard-environment/${projectId}`)
@@ -250,6 +264,35 @@ export default ({ wizard }) => {
               placeholder={``}
               helperText="This JavaScript will run after the browser has auto-scrolled on every breakpoint"
             />
+
+            <TextField
+              className={classes.queryString}
+              label="Query String"
+              variant="outlined"
+              value={queryString}
+              onChange={(e) => {
+                setQueryString(e.target.value)
+              }}
+              onBlur={validate}
+              placeholder={`key1=value1&key2=value2`}
+              helperText="This query string will be appended to every URL. The string {timestamp} will be replaced dynamically with the current timestamp in milliseconds."
+            />
+
+            <TextField
+              className={classes.requestHeaders}
+              label="Extra Request Headers"
+              variant="outlined"
+              multiline
+              rows={8}
+              value={requestHeaders.join('\n')}
+              onChange={(e) => {
+                setRequestHeaders(e.target.value.split('\n'))
+              }}
+              onBlur={validate}
+              placeholder={`Cookie: authenticated=true\nX-Disable-Ads: true`}
+              helperText="These request headers will be sent with every request."
+            />
+
           </div>
         </div>
       </main>

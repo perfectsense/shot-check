@@ -13,7 +13,7 @@ const useStyles = makeStyles({
   main: {
     display: 'grid',
     gridTemplateColumns: '75px 1fr 1fr 75px 1fr 1fr 75px',
-    gridTemplateRows: '2em 75px min-content 2em min-content 2em min-content 2em min-content 2em min-content 5em'
+    gridTemplateRows: '2em 75px min-content 2em min-content 2em min-content 2em min-content 2em min-content 2em min-content 5em'
   },
   top: {
     gridRow: '2',
@@ -59,6 +59,14 @@ const useStyles = makeStyles({
     gridRow: '9',
     gridColumn: '5 / 7'
   },
+  queryString: {
+    gridRow: '11',
+    gridColumn: '2 / 4'
+  },
+  requestHeaders: {
+    gridRow: '11',
+    gridColumn: '5 / 7'
+  },
   urlTextArea: {
     whiteSpace: 'nowrap'
   }
@@ -90,6 +98,8 @@ export default ({
   clickSelectors,
   pageLoadJS,
   afterScrollJS,
+  queryString,
+  requestHeaders,
   verifySpoofUrl,
   beforeAfter,
   continuing,
@@ -115,6 +125,8 @@ export default ({
         clickSelectors: clickSelectors || [],
         pageLoadJavaScript: pageLoadJS || '',
         afterScrollJavaScript: afterScrollJS || '',
+        queryString: queryString || '',
+        requestHeaders: requestHeaders || [],
         beforeAfter: beforeAfter || false,
         baselineCapture: baselineCapture || false,
         baselineJobId: baselineJobId || null,
@@ -136,6 +148,8 @@ export default ({
   const [clickSelectorsList, setClickSelectorsList] = useState(() => job.clickSelectors)
   const [pageLoadJavaScript, setPageLoadJavaScript] = useState(() => job.pageLoadJavaScript)
   const [afterScrollJavaScript, setAfterScrollJavaScript] = useState(() => job.afterScrollJavaScript)
+  const [queryStringString, setQueryStringString] = useState(() => job.queryString)
+  const [requestHeadersList, setRequestHeadersList] = useState(() => job.requestHeaders)
   const [isBeforeAfter, setIsBeforeAfter] = useState(() => job.beforeAfter)
   const [isBaselineCapture, setIsBaselineCapture] = useState(() => job.baselineCapture)
   const [rightSpoofUrl, setRightSpoofUrl] = useState(() => job.rightSpoofUrl)
@@ -216,6 +230,8 @@ export default ({
       clickSelectors: clickSelectorsList.filter((s) => s),
       pageLoadJavaScript: pageLoadJavaScript,
       afterScrollJavaScript: afterScrollJavaScript,
+      queryString: queryStringString,
+      requestHeaders: requestHeadersList,
       rightSpoofUrl: rightSpoofUrl || null,
       beforeAfter: isBeforeAfter,
       baselineCapture: isBaselineCapture,
@@ -386,6 +402,34 @@ export default ({
           onBlur={validate}
           placeholder={``}
           helperText="This JavaScript will run after the browser has auto-scrolled on every breakpoint"
+        />
+
+        <TextField
+          className={classes.queryString}
+          label="Query String"
+          variant="outlined"
+          value={queryStringString}
+          onChange={(e) => {
+            setQueryStringString(e.target.value)
+          }}
+          onBlur={validate}
+          placeholder={`key1=value1&key2=value2`}
+          helperText="This query string will be appended to every URL. The string {timestamp} will be replaced dynamically with the current timestamp in milliseconds."
+        />
+
+        <TextField
+          className={classes.requestHeaders}
+          label="Extra Request Headers"
+          variant="outlined"
+          multiline
+          rows={8}
+          value={requestHeadersList.join('\n')}
+          onChange={(e) => {
+            setRequestHeadersList(e.target.value.split('\n'))
+          }}
+          onBlur={validate}
+          placeholder={`Cookie: authenticated=true\nX-Disable-Ads: true`}
+          helperText="These request headers will be sent with every request."
         />
       </main>
 

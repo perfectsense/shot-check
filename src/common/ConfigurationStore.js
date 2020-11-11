@@ -216,7 +216,9 @@ function saveSite(
   ignoreSelectors,
   clickSelectors,
   pageLoadJavaScript,
-  afterScrollJavaScript
+  afterScrollJavaScript,
+  queryString,
+  requestHeaders
 ) {
   projectStore(projectId).set('sites.' + siteId, {
     name: name,
@@ -226,7 +228,9 @@ function saveSite(
     ignoreSelectors: ignoreSelectors,
     clickSelectors: clickSelectors,
     pageLoadJavaScript: pageLoadJavaScript,
-    afterScrollJavaScript: afterScrollJavaScript
+    afterScrollJavaScript: afterScrollJavaScript,
+    queryString: queryString,
+    requestHeaders: requestHeaders
   })
 }
 
@@ -245,7 +249,9 @@ function getSite(projectId, siteId) {
     ignoreSelectors: site.ignoreSelectors || [],
     clickSelectors: site.clickSelectors || [],
     pageLoadJavaScript: site.pageLoadJavaScript || '',
-    afterScrollJavaScript: site.afterScrollJavaScript || ''
+    afterScrollJavaScript: site.afterScrollJavaScript || '',
+    queryString: site.queryString || '',
+    requestHeaders: site.requestHeaders || []
   }
 }
 

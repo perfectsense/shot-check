@@ -25,7 +25,7 @@ export default () => {
   const [urlsFetched, setUrlsFetched] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
 
-  let name, ignoreSelectors, clickSelectors, pageLoadJS, afterScrollJS, realUrl
+  let name, ignoreSelectors, clickSelectors, pageLoadJS, afterScrollJS, realUrl, queryString, requestHeaders
 
   const project = getProject(projectId)
 
@@ -39,6 +39,8 @@ export default () => {
     clickSelectors = site.clickSelectors
     pageLoadJS = site.pageLoadJavaScript
     afterScrollJS = site.afterScrollJavaScript
+    queryString = site.queryString
+    requestHeaders = site.requestHeaders
 
     useEffect(() => {
       generateEnvironmentSiteUrls(
@@ -89,6 +91,8 @@ export default () => {
           pageLoadJS={pageLoadJS}
           afterScrollJS={afterScrollJS}
           verifySpoofUrl={realUrl}
+          queryString={queryString}
+          requestHeaders={requestHeaders}
         />
       )) || <CircularProgress style={{ position: 'absolute', left: '50%', top: '50%' }} />}
     </>

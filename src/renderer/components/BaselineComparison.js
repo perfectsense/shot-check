@@ -65,6 +65,8 @@ export default () => {
           clickSelectors={(site && site.clickSelectors) || job.clickSelectors}
           pageLoadJS={(site && site.pageLoadJavaScript) || job.pageLoadJavaScript}
           afterScrollJS={(site && site.afterScrollJavaScript) || job.afterScrollJavaScript}
+          queryString={(site && site.queryString) || job.queryString}
+          requestHeaders={(site && site.requestHeaders) || job.requestHeaders}
         />
       )) || <CircularProgress style={{ position: 'absolute', left: '50%', top: '50%' }} />}
     </>

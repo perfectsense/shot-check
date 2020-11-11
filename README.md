@@ -188,6 +188,20 @@ completed. The method `shotCheckSleep(milliseconds)` is available in the page
 environment for your convenience. Use this if a site uses an animation or
 loading screen that cannot otherwise be skipped.
 
+### Query Strings
+
+To automatically append a querystring (?exampleKey=value) to every URL, supply
+a Query String. The special value `{timestamp}` will be replaced with the
+current timestamp in milliseconds. Use this as a cache buster if necessary, for
+example `_={timestamp}`.
+
+### Extra Request Headers
+
+Extra request headers can be used to customize the request even further. For
+example, `Cookie: userId=1234` or `User-Agent: Mozilla/5.0 (Linux; Android 8.0;
+Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko)
+Chrome/86.0.4240.183 Mobile Safari/537.36`.
+
 ### Automatic Site Paths
 
 If it is more convenient for you and your team to maintain a list of URLs that

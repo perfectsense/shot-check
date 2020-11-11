@@ -107,6 +107,8 @@ function saveJob(job) {
   store.set('afterScrollJavaScript', job.afterScrollJavaScript)
   store.set('breakpoints', job.breakpoints)
   store.set('rightSpoofUrl', job.rightSpoofUrl)
+  store.set('requestHeaders', job.requestHeaders)
+  store.set('queryString', job.queryString)
 }
 
 function getJobMatchThreshold(projectId, jobId) {
@@ -226,7 +228,9 @@ function getJob(projectId, jobId) {
     matches: store.get('matches') || [],
     completionStatus: store.get('completionStatus') || '',
     matchThreshold: store.get('matchThreshold') || 100,
-    matchSummary: store.get('matchSummary') || 0
+    matchSummary: store.get('matchSummary') || 0,
+    requestHeaders: store.get('requestHeaders') || [],
+    queryString: store.get('queryString') || ''
   }
 
   return job

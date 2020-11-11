@@ -19,7 +19,7 @@ import Header from './Header'
 export default () => {
   const { jobId, projectId, siteId, leftEnvironmentId, rightEnvironmentId } = useParams()
 
-  let name, ignoreSelectors, clickSelectors, pageLoadJS, afterScrollJS
+  let name, ignoreSelectors, clickSelectors, pageLoadJS, afterScrollJS, queryString, requestHeaders
   let [leftUrls, setLeftUrls] = useState([])
   let [rightUrls, setRightUrls] = useState([])
   let [urlsFetched, setUrlsFetched] = useState(false)
@@ -36,6 +36,8 @@ export default () => {
     clickSelectors = site.clickSelectors
     pageLoadJS = site.pageLoadJavaScript
     afterScrollJS = site.afterScrollJavaScript
+    queryString = site.queryString
+    requestHeaders = site.requestHeaders
     const leftUrlPrefix = getEnvironmentSiteUrl(projectId, leftEnvironmentId, siteId)
     const rightUrlPrefix = getEnvironmentSiteUrl(projectId, rightEnvironmentId, siteId)
 
@@ -87,6 +89,8 @@ export default () => {
           clickSelectors={clickSelectors}
           pageLoadJS={pageLoadJS}
           afterScrollJS={afterScrollJS}
+          queryString={queryString}
+          requestHeaders={requestHeaders}
         />
       )) || <CircularProgress style={{ position: 'absolute', left: '50%', top: '50%' }} />}
     </>

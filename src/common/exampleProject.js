@@ -9,7 +9,7 @@ function initializeExampleProject() {
   const qaEnvironmentId = '00000000-0000-0000-0002-000000000001'
 
   saveProject(projectId, 'Shot Check Example Project', null)
-  saveSite(projectId, site1Id, 'Shot Check Examples', true, '/spot-check-urls.txt', [], [], [], '', '')
+  saveSite(projectId, site1Id, 'Shot Check Examples', true, '/spot-check-urls.txt', [], [], [], '', '', '', [])
   saveEnvironment(projectId, qaEnvironmentId, 'QA')
   saveEnvironment(projectId, prodEnvironmentId, 'Production')
   setEnvironmentSiteUrl(

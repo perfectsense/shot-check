@@ -209,17 +209,42 @@ async function takeShot(
   await page.exposeFunction('shotCheckMessageCallback', messageCallback)
   await page.exposeFunction('shotCheckSleep', sleep)
 
+  let headers = {}
+
+  if (job.requestHeaders) {
+    for (let header of job.requestHeaders) {
+      const pieces = header.split(':')
+      if (pieces.length > 1) {
+        const key = pieces[0].trim()
+        const value = pieces.slice(1).join(":").trim()
+        headers[key] = value
+      }
+    }
+  }
+
+  if (job.queryString) {
+    let q = job.queryString.replace(/^\?/, '')
+    q = q.replace('{timestamp}', new Date().getTime())
+    if (url.includes('?')) {
+      url = url + '&' + q
+    } else {
+      url = url + '?' + q
+    }
+  }
+
   if (spoofUrl) {
     const spoofPieces = spoofUrl.split('/')
     if (spoofPieces.length == 3) {
       const spoofHost = spoofPieces[2]
       const protocol = spoofPieces[0]
-      const headers = { 'X-Forwarded-Host': spoofHost, 'X-Forwarded-Proto': protocol }
-      page.setExtraHTTPHeaders(headers)
+      headers = { ...headers, 'X-Forwarded-Host': spoofHost, 'X-Forwarded-Proto': protocol }
     } else {
       throw 'Invalid Spoof URL! [' + spoofUrl + ']'
     }
   }
+
+  console.log('Setting extra request headers: ', headers)
+  page.setExtraHTTPHeaders(headers)
 
   if (auth) {
     console.log(`Authenticating with username ${auth.username}`)
