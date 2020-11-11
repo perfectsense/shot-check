@@ -13,7 +13,8 @@ const useStyles = makeStyles({
   main: {
     display: 'grid',
     gridTemplateColumns: '75px 1fr 1fr 75px 1fr 1fr 75px',
-    gridTemplateRows: '2em 75px min-content 2em min-content 2em min-content 2em min-content 2em min-content 2em min-content 5em'
+    gridTemplateRows:
+      '2em 75px min-content 2em min-content 2em min-content 2em min-content 2em min-content 2em min-content 5em'
   },
   top: {
     gridRow: '2',

@@ -238,16 +238,9 @@ export default () => {
 
           <FormControlLabel
             className={classes.prerelease}
-            control={
-              <Switch
-                name="prerelease"
-                checked={prerelease}
-                onChange={(_, val) => setPrerelease(val)}
-              />
-            }
-            label="Automatically Install Prereleases?"
+            control={<Switch name="prerelease" checked={prerelease} onChange={(_, val) => setPrerelease(val)} />}
+            label="Allow Prerelease Updates?"
           />
-
         </div>
       </main>
       <Footer>

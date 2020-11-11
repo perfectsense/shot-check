@@ -42,7 +42,7 @@ const useStyles = makeStyles({
   requestHeaders: {
     gridRow: '6',
     gridColumn: '5 / 7'
-  },
+  }
 })
 
 export default ({ wizard }) => {
@@ -292,7 +292,6 @@ export default ({ wizard }) => {
               placeholder={`Cookie: authenticated=true\nX-Disable-Ads: true`}
               helperText="These request headers will be sent with every request."
             />
-
           </div>
         </div>
       </main>
