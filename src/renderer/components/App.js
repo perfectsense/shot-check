@@ -118,7 +118,7 @@ export default () => {
             <BaselineComparison />
           </Route>
 
-          <Route exact path="/baseline-comparison/:projectId/:jobId/:siteId/:environmentId">
+          <Route exact path="/baseline-site-environment-comparison/:projectId/:jobId/:siteId/:environmentId">
             <BaselineComparison />
           </Route>
 

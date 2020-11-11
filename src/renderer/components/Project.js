@@ -569,7 +569,11 @@ const BaselineCompareCard = ({ project, className, sites, environments }) => {
           size="small"
           variant="contained"
           color="primary"
-          onClick={() => history.push(`/baseline-comparison/${project.projectId}/${jobId}/${siteId}/${environmentId}`)}
+          onClick={() =>
+            history.push(
+              `/baseline-site-environment-comparison/${project.projectId}/${jobId}/${siteId}/${environmentId}`
+            )
+          }
         >
           Next
         </Button>

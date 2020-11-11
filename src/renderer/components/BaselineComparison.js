@@ -2,7 +2,7 @@
 import { CircularProgress } from '@material-ui/core'
 import PlaylistAddCheckIcon from '@material-ui/icons/PlaylistAddCheck'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { getJob } from '../../common/ComparisonResultStore'
 import { getEnvironment, getEnvironmentSiteUrl, getSite } from '../../common/ConfigurationStore'
 import Comparison from './Comparison'
@@ -14,14 +14,16 @@ export default () => {
   const [rightUrls, setRightUrls] = useState(() => [])
   const [job, setJob] = useState(() => getJob(projectId, jobId))
   const [name, setName] = useState(null)
+  const [site, setSite] = useState(() => (siteId && getSite(projectId, siteId)) || {})
 
   useEffect(() => {
     if (siteId && environmentId) {
-      const site = getSite(projectId, siteId)
+      const s = getSite(projectId, siteId)
       const environment = getEnvironment(projectId, environmentId)
-      setName(`${site.name}: ${environment.name}`)
+      setSite(s)
+      setName(`${s.name}: ${environment.name}`)
     } else {
-      setName(job.name)
+      setName(job.name + ' Comparison')
     }
   }, [projectId, siteId, environmentId])
 
@@ -59,6 +61,10 @@ export default () => {
           rightEnvironmentId={environmentId}
           leftUrls={job.leftUrls}
           rightUrls={rightUrls}
+          ignoreSelectors={(site && site.ignoreSelectors) || job.ignoreSelectors}
+          clickSelectors={(site && site.clickSelectors) || job.clickSelectors}
+          pageLoadJS={(site && site.pageLoadJavaScript) || job.pageLoadJavaScript}
+          afterScrollJS={(site && site.afterScrollJavaScript) || job.afterScrollJavaScript}
         />
       )) || <CircularProgress style={{ position: 'absolute', left: '50%', top: '50%' }} />}
     </>
