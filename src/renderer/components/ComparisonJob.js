@@ -310,9 +310,7 @@ const UrlPairTableRow = ({
 }) => {
   const isOpen = index == openIndex
   const breakpoints = job.breakpoints
-  const [activeBreakpoint, setActiveBreakpoint] = useState(
-    () => breakpoints.length > 0 && 0
-  )
+  const [activeBreakpoint, setActiveBreakpoint] = useState(() => breakpoints.length > 0 && 0)
   const classes = useStyles()
 
   const leftUrlUrl = leftUrl && leftUrl.url
