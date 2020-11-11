@@ -61,7 +61,11 @@ async function autoScroll(page, turbo, description) {
         try {
           var totalHeight = 0
           var timer = setInterval(async () => {
-            var scrollHeight = document.body.scrollHeight
+            let scrollHeight = Math.max(
+              document.body.scrollHeight, document.documentElement.scrollHeight,
+              document.body.offsetHeight, document.documentElement.offsetHeight,
+              document.body.clientHeight, document.documentElement.clientHeight
+            )
             if (totalHeight < scrollHeight) {
               if (totalHeight % (autoScrollDistance * 7) == 0) {
                 shotCheckMessageCallback(
