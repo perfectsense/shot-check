@@ -131,7 +131,7 @@ const PreviousJob = ({ jobId, projectId }) => {
     if (job.siteId && job.leftEnvironmentId) {
       url = `/baseline-comparison/${projectId || '_'}/${jobId}/${job.siteId}/${job.leftEnvironmentId}`
     } else {
-      url = `/baseline-comparison/${projectI || '_'}/${jobId}`
+      url = `/baseline-comparison/${projectId || '_'}/${jobId}`
     }
 
     return (
