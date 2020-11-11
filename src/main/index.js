@@ -8,6 +8,7 @@ import ipcListeners from './ipc/ipcListeners'
 import { APP_NAME, isDevelopment } from '../common/appConfig'
 import { initializeExampleProjectIfNecessary } from '../common/exampleProject'
 import { autoUpdater } from 'electron-updater'
+import { isPrerelease } from '../common/ConfigurationStore'
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
@@ -81,6 +82,7 @@ app.on('ready', () => {
   ipcListeners()
 
   if (!isDevelopment) {
+    autoUpdater.allowPrerelease = isPrerelease()
     autoUpdater.checkForUpdates()
   }
 })

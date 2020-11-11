@@ -365,6 +365,14 @@ function saveChromiumHeadless(headless) {
   preferencesStore.set('headless', headless)
 }
 
+function isPrerelease() {
+  return preferencesStore.get('prerelease', false)
+}
+
+function savePrerelease(headless) {
+  preferencesStore.set('prerelease', headless)
+}
+
 // Auth
 function saveProjectAuth(projectId, username, password) {
   if (username) {
@@ -489,6 +497,8 @@ export {
   deleteDefaultBreakpoints,
   isChromiumHeadless,
   saveChromiumHeadless,
+  isPrerelease,
+  savePrerelease,
   saveProjectAuth,
   saveEnvironmentAuth,
   getProjectAuth,

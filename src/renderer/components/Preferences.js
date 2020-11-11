@@ -12,7 +12,9 @@ import {
   saveChromiumHeadless,
   saveChromiumPath,
   saveDefaultBreakpoints,
-  saveScrollSpeed
+  saveScrollSpeed,
+  isPrerelease,
+  savePrerelease
 } from '../../common/ConfigurationStore'
 import Footer from './Footer'
 import Header from './Header'
@@ -70,6 +72,7 @@ export default () => {
   const [numBreakpoints, setNumBreakpoints] = useState(() => defaultBreakpoints.length)
   const [autoscrollTipAnchorEl, setAutoscrollTipAnchorEl] = useState(null)
   const [chromiumHeadless, setChromiumHeadless] = useState(() => isChromiumHeadless())
+  const [prerelease, setPrerelease] = useState(() => isPrerelease())
   const { enqueueSnackbar } = useSnackbar()
 
   const handleSave = () => {
@@ -77,6 +80,7 @@ export default () => {
     saveScrollSpeed(scrollSpeed)
     saveDefaultBreakpoints(defaultBreakpoints)
     saveChromiumHeadless(chromiumHeadless)
+    savePrerelease(prerelease)
     enqueueSnackbar('Preferences Saved!', { variant: 'success' })
   }
 
@@ -231,6 +235,19 @@ export default () => {
               />
             </div>
           ))}
+
+          <FormControlLabel
+            className={classes.prerelease}
+            control={
+              <Switch
+                name="prerelease"
+                checked={prerelease}
+                onChange={(_, val) => setPrerelease(val)}
+              />
+            }
+            label="Automatically Install Prereleases?"
+          />
+
         </div>
       </main>
       <Footer>
