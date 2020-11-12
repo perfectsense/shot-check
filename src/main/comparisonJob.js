@@ -4,7 +4,7 @@ import Jimp from 'jimp'
 import * as path from 'path'
 import * as pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer-core'
 import { getUserDataDir } from '../common/appConfig'
 import {
   finalizeJob,
@@ -100,17 +100,50 @@ async function autoScroll(page, turbo, description) {
   )
 }
 
-function getChromiumExecPath() {
+async function getChromiumExecPath(messageCallback) {
   const customPath = getChromiumPath()
   if (customPath) {
     return customPath
   }
-  // This only works because package.json has `build/asar: false`
-  return puppeteer.executablePath()
+  const browserFetcher = puppeteer.createBrowserFetcher({ path: path.join(getUserDataDir(), 'browsers') })
+
+  const preferredRevision = require('puppeteer-core/lib/cjs/puppeteer/revisions.js').PUPPETEER_REVISIONS.chromium
+
+  const localRevisions = await browserFetcher.localRevisions()
+
+  if (localRevisions.includes(preferredRevision)) {
+    const revisionInfo = browserFetcher.revisionInfo(preferredRevision)
+    return revisionInfo.executablePath
+  } else if (browserFetcher.canDownload(preferredRevision)) {
+    let lastRun = new Date().getTime()
+    await browserFetcher.download(preferredRevision, async (downloadBytes, totalBytes) => {
+      const now = new Date().getTime()
+      if (now > lastRun + 250) {
+        lastRun = now
+
+        await messageCallback({
+          status: 'running',
+          progressDetail: `Downloading Chromium version ${preferredRevision}`,
+          progressIndex: Math.round((downloadBytes / totalBytes) * 100),
+          progressTotal: 100
+        })
+      }
+    })
+    messageCallback({
+      status: 'running',
+      progressDetail: `Downloading Chromium version ${preferredRevision}`,
+      progressIndex: 100,
+      progressTotal: 100
+    })
+    const revisionInfo = browserFetcher.revisionInfo(preferredRevision)
+    return revisionInfo.executablePath
+  } else {
+    throw `Cannot download Chrome version ${preferredRevision}! Update the Chrome Path in Preferences (gear icon)`
+  }
 }
 
-async function openBrowser() {
-  const chromiumPath = getChromiumExecPath()
+async function openBrowser(messageCallback) {
+  const chromiumPath = await getChromiumExecPath(messageCallback)
   const chromiumPathOptions = { executablePath: chromiumPath }
 
   try {
@@ -118,6 +151,13 @@ async function openBrowser() {
   } catch (error) {
     throw 'Chrome executable not found! Update the Chrome Path in Preferences (gear icon)'
   }
+
+  messageCallback({
+    status: 'running',
+    progressDetail: 'Launching Browser . . .',
+    progressIndex: null,
+    progressTotal: null
+  })
 
   /*
   const chromeArgs = [
@@ -487,6 +527,7 @@ const comparisonJob = async (job, callback) => {
     job: job,
     status: 'running',
     startDate: startDate.getTime(),
+    progressIndex: 0,
     progressTotal: progressTotal
   })
 
@@ -494,13 +535,20 @@ const comparisonJob = async (job, callback) => {
 
   let browser
   try {
-    browser = await openBrowser()
+    browser = await openBrowser(callback)
     for (let urlSet of urlSets) {
       for (let i = 0; i < urlSet.urls.length; i++) {
         const startTime = new Date().getTime()
         await takeShot(
           browser,
-          (msg) => callback({ job: job, status: 'running', progressDetail: msg }),
+          (msg) =>
+            callback({
+              job: job,
+              status: 'running',
+              progressDetail: msg,
+              progressIndex: progressIndex,
+              progressTotal: progressTotal
+            }),
           job.breakpoints,
           projectId,
           jobId,
@@ -510,7 +558,7 @@ const comparisonJob = async (job, callback) => {
           urlSet.auth,
           urlSet.spoofUrl,
           job,
-          () => callback({ progressIndex: ++progressIndex })
+          () => callback({ progressIndex: ++progressIndex, progressTotal: progressTotal })
         )
         const duration = new Date().getTime() - startTime
         saveJobUrlDuration(projectId, jobId, urlSet.side, i, duration)
@@ -529,25 +577,29 @@ const comparisonJob = async (job, callback) => {
     }
   }
 
-  progressIndex = 0
-  progressTotal = urlSets[0].urls.length * job.breakpoints.length
-  callback({
-    job: job,
-    status: 'running',
-    progressDetail: 'Comparing Screenshots',
-    progressIndex: progressIndex,
-    progressTotal: progressTotal
-  })
-
   let completionStatus
   if (rightUrls.length > 0) {
+    progressIndex = 0
+    progressTotal = urlSets[1].urls.length * job.breakpoints.length
+    console.log(`Comparing Screenshots ${progressIndex} / ${progressTotal}`)
+    callback({
+      job: job,
+      status: 'running',
+      progressDetail: 'Comparing Screenshots',
+      progressIndex: progressIndex,
+      progressTotal: progressTotal
+    })
     for (let i = 0; i < rightUrls.length; i++) {
       for (let breakpoint of job.breakpoints) {
         if (job.baselineJobId) {
           copyJobImage(projectId, job.baselineJobId, jobId, breakpoint.width, i, 'left')
         }
         await compareShots(projectId, jobId, breakpoint.width, i)
-        callback({ progressIndex: ++progressIndex })
+        callback({
+          progressDetail: 'Comparing Screenshots',
+          progressIndex: ++progressIndex,
+          progressTotal: progressTotal
+        })
       }
     }
     completionStatus = 'complete'
