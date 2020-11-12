@@ -129,7 +129,7 @@ const PreviousJob = ({ jobId, projectId }) => {
   } else if (job.completionStatus == 'baselineCaptured') {
     let url
     if (job.siteId && job.leftEnvironmentId) {
-      url = `/baseline-comparison/${projectId || '_'}/${jobId}/${job.siteId}/${job.leftEnvironmentId}`
+      url = `/baseline-site-environment-comparison/${projectId || '_'}/${jobId}/${job.siteId}/${job.leftEnvironmentId}`
     } else {
       url = `/baseline-comparison/${projectId || '_'}/${jobId}`
     }
