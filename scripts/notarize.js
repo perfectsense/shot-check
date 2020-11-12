@@ -20,7 +20,7 @@ exports.default = async function notarizing(context) {
     appleId: process.env.APPLEID,
     appleIdPassword: process.env.APPLEIDPASS,
   }).then(() => {
-    console.log('Notarization Success: ' + successMessage)
+    console.log('Notarization Success')
     clearInterval(keepAlive)
   })
   .catch((err) => {
