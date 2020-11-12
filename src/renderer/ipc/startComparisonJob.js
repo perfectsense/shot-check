@@ -31,22 +31,14 @@ export default (runningJobContext, enqueueSnackbar, job, continuingJobId) => {
         payload: { message: response.data }
       })
     }
-    if (response.data.progressDetail) {
+    if ('progressDetail' in response.data || 'progressTotal' in response.data || 'progressIndex' in response.data) {
       runningJobContext.dispatch({
-        type: 'SET_PROGRESS_DETAIL',
-        payload: { progressDetail: response.data.progressDetail }
-      })
-    }
-    if (response.data.progressTotal) {
-      runningJobContext.dispatch({
-        type: 'SET_PROGRESS_TOTAL',
-        payload: { progressTotal: response.data.progressTotal }
-      })
-    }
-    if (response.data.progressIndex) {
-      runningJobContext.dispatch({
-        type: 'SET_PROGRESS_INDEX',
-        payload: { progressIndex: response.data.progressIndex }
+        type: 'SET_PROGRESS',
+        payload: {
+          progressDetail: response.data.progressDetail,
+          progressIndex: response.data.progressIndex,
+          progressTotal: response.data.progressTotal
+        }
       })
     }
   }

@@ -154,8 +154,14 @@ const PreviousJob = ({ jobId, projectId }) => {
 const ProgressBar = ({ index, total, detail }) => {
   const classes = useStyles()
 
-  const progress = Math.round((index / total) * 100)
-  const label = `${index} / ${total}`
+  let progress, label
+  if (index == null && total == null) {
+    progress = 0
+    label = '...'
+  } else {
+    progress = Math.round((index / total) * 100)
+    label = `${index} / ${total}`
+  }
 
   return (
     <Box
@@ -190,10 +196,10 @@ export default ({ children }) => {
   const previousJobId = runningJobContext.state.previousJobId
   const previousProjectId = runningJobContext.state.previousProjectId
   const status = runningJobContext.state.status
-  const progressIndex = runningJobContext.state.progressIndex || 0
-  const progressTotal = runningJobContext.state.progressTotal
-  const progressDetail = runningJobContext.state.progressDetail
-  const showProgress = progressTotal && progressTotal > 0
+  const progressIndex = runningJobContext.state.progressIndex != null ? runningJobContext.state.progressIndex : null
+  const progressTotal = runningJobContext.state.progressTotal != null ? runningJobContext.state.progressTotal : null
+  const progressDetail = runningJobContext.state.progressDetail != null ? runningJobContext.state.progressDetail : null
+  const showProgress = (progressTotal != null && progressTotal != null) || progressDetail != null
   const showPreviousJob = previousJobId && !showProgress
 
   return (

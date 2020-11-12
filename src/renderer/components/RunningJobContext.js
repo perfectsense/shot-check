@@ -19,19 +19,11 @@ const reducer = (state, action) => {
         ...state,
         status: action.payload.status
       }
-    case 'SET_PROGRESS_DETAIL':
+    case 'SET_PROGRESS':
       return {
         ...state,
-        progressDetail: action.payload.progressDetail
-      }
-    case 'SET_PROGRESS_INDEX':
-      return {
-        ...state,
-        progressIndex: action.payload.progressIndex
-      }
-    case 'SET_PROGRESS_TOTAL':
-      return {
-        ...state,
+        progressDetail: action.payload.progressDetail,
+        progressIndex: action.payload.progressIndex,
         progressTotal: action.payload.progressTotal
       }
     case 'CLEAR':

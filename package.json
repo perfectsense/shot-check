@@ -25,9 +25,17 @@
   },
   "build": {
     "appId": "com.psddev.shot-check",
-    "asar": false,
+    "asar": true,
+    "afterSign": "scripts/notarize.js",
     "mac": {
-      "category": "public.app-category.developer-tools"
+      "category": "public.app-category.developer-tools",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "dmg": {
+      "sign": false
     },
     "publish": {
       "provider": "github",

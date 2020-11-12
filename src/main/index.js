@@ -32,7 +32,7 @@ function createMainWindow() {
     window.webContents.session.loadExtension(
       path.join(
         os.homedir(),
-        '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.8.2_0'
+        '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.9.0_45'
       )
     )
     window.webContents.openDevTools()
