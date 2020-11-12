@@ -10,10 +10,21 @@ exports.default = async function notarizing(context) {
 
   console.log(`Notarizing ${appOutDir}/${appName}.app . . .`)
 
-  return await notarize({
+  const keepAlive = setInterval(function() {
+    console.log('Waiting for notarization . . . ' + new Date())
+  }, 30000)
+
+  return notarize({
     appBundleId: 'com.psddev.shot-check',
     appPath: `${appOutDir}/${appName}.app`,
     appleId: process.env.APPLEID,
     appleIdPassword: process.env.APPLEIDPASS,
-  });
-};
+  }).then(() => {
+    console.log('Notarization Success: ' + successMessage)
+    clearInterval(keepAlive)
+  })
+  .catch((err) => {
+    console.log('Notarization Error: ' + err)
+    clearInterval(keepAlive)
+  })
+}
