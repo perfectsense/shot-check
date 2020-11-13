@@ -2,3 +2,4 @@ https://perfectsense.github.io/shot-check/example/qa/page1.html
 https://perfectsense.github.io/shot-check/example/qa/page2.html
 https://perfectsense.github.io/shot-check/example/qa/page3.html
 https://perfectsense.github.io/shot-check/example/qa/page4.html
+https://perfectsense.github.io/shot-check/example/qa/page5.html
