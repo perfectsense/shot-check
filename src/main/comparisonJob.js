@@ -39,9 +39,17 @@ function sleep(ms) {
 // scroll speed is a percentage of maximum
 const defaultScrollSpeed = 65
 const maxScrollSpeed = 500 // 0% will give each $distance pixels this number of milliseconds
-const defaultAutoScrollDistance = 256
+const defaultAutoScrollDistance = 768
 const timeout = 30000
-const maximumScrollDistance = 75000
+const maximumScrollDistance = getMaxPageHeight()
+
+function getMaxPageHeight() {
+  return getPageHeight() * 8
+}
+
+function getPageHeight() {
+  return 8192
+}
 
 async function autoScroll(page, turbo, description) {
   let scrollSpeed = getScrollSpeed()
@@ -50,7 +58,7 @@ async function autoScroll(page, turbo, description) {
   }
   scrollSpeed = scrollSpeed * 0.01 * maxScrollSpeed
   const autoScrollTimeout = (turbo && 0) || maxScrollSpeed - Math.min(Math.max(scrollSpeed, 1), maxScrollSpeed - 1)
-  const autoScrollDistance = (turbo && 1024) || defaultAutoScrollDistance
+  const autoScrollDistance = (turbo && 4096) || defaultAutoScrollDistance
 
   console.log(`${turbo ? 'Turbo ' : ''}Auto-scrolling...`)
 
@@ -177,7 +185,16 @@ async function openBrowser(messageCallback) {
   })
 }
 
-async function capture(page, jobDir, filename, messageCallback, description, afterAutoscrollCallback, turboAutoscroll) {
+async function capture(
+  page,
+  width,
+  jobDir,
+  filename,
+  messageCallback,
+  description,
+  afterAutoscrollCallback,
+  turboAutoscroll
+) {
   /*
   const session = await page.target().createCDPSession()
   await session.send('Page.enable')
@@ -189,11 +206,67 @@ async function capture(page, jobDir, filename, messageCallback, description, aft
 
   await afterAutoscrollCallback()
 
-  messageCallback(`Capturing screenshot of ${description}`)
-  await page.screenshot({
-    path: path.join(jobDir, filename),
-    fullPage: true
+  await page.setViewport({
+    height: 512,
+    width: width
   })
+
+  const pageHeight = Math.min(
+    getMaxPageHeight(),
+    await page.evaluate(() => {
+      return Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight,
+        document.body.clientHeight,
+        document.documentElement.clientHeight
+      )
+    })
+  )
+
+  const height = Math.min(getPageHeight(), pageHeight)
+
+  page.setViewport({
+    height: height,
+    width: width
+  })
+
+  const numShots = Math.ceil(pageHeight / height)
+
+  for (let scrollPosition = 0; scrollPosition < pageHeight; scrollPosition += height) {
+    const num = Math.floor(scrollPosition / height)
+    messageCallback(`Capturing screenshot of ${description} (${num + 1} / ${numShots})`)
+
+    if (scrollPosition + height > pageHeight) {
+      page.setViewport({
+        height: pageHeight % height,
+        width: width
+      })
+    }
+
+    await page.evaluate((height) => {
+      window.scrollTo(0, height)
+    }, scrollPosition)
+
+    await page.screenshot({
+      path: path.join(jobDir, `screen-${num}-${filename}`),
+      fullPage: false
+    })
+  }
+
+  await Jimp.read(path.join(jobDir, `screen-0-${filename}`)).then(async (image) => {
+    image.contain(width, pageHeight, Jimp.VERTICAL_ALIGN_TOP)
+    for (let i = 1; i < numShots; i++) {
+      messageCallback(`Stitching image ${i + 1}`)
+      await Jimp.read(path.join(jobDir, `screen-${i}-${filename}`)).then((src) => image.blit(src, 0, height * i))
+    }
+    await image.write(path.join(jobDir, filename))
+  })
+  for (let i = 0; i < numShots; i++) {
+    const file = path.join(jobDir, `screen-${i}-${filename}`)
+    fs.unlinkSync(file)
+  }
 }
 
 async function pageDeleteSelectors(page, selectors) {
@@ -311,7 +384,7 @@ async function takeShot(
     for (let breakpoint of breakpoints) {
       try {
         await page.setViewport({
-          height: 1024,
+          height: getPageHeight(),
           width: breakpoint.width
         })
         messageCallback(`Loading ${side} #${index} at ${breakpoint.width}`)
@@ -325,6 +398,7 @@ async function takeShot(
         await pageExecuteJavaScript(page, job.pageLoadJavaScript)
         await capture(
           page,
+          breakpoint.width,
           thisJobDir,
           `${side}-${index}-${breakpoint.width}.png`,
           messageCallback,
