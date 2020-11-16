@@ -221,27 +221,29 @@ const ScreenshotTable = ({ activeBreakpoint, job, index, matches, leftUrl, right
                 src={`file://${left.path}`}
               />
             )) ||
-              left.path}
+              'Image Not Found'}
           </TableCell>
           <TableCell style={tableCellStyle}>
-            {diff.exists && (
+            {(diff.exists && (
               <img
                 style={{ cursor: 'pointer' }}
                 onClick={() => open(diff.path)}
                 width={imageWidth}
                 src={`file://${diff.path}`}
               />
-            )}
+            )) ||
+              'Image Not Found'}
           </TableCell>
           <TableCell style={tableCellStyle}>
-            {right.exists && (
+            {(right.exists && (
               <img
                 style={{ cursor: 'pointer' }}
                 onClick={() => open(right.path)}
                 width={imageWidth}
                 src={`file://${right.path}`}
               />
-            )}
+            )) ||
+              'Image Not Found'}
           </TableCell>
         </TableRow>
       </TableBody>

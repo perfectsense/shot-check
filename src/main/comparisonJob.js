@@ -613,31 +613,42 @@ const comparisonJob = async (job, callback) => {
     for (let urlSet of urlSets) {
       for (let i = 0; i < urlSet.urls.length; i++) {
         const startTime = new Date().getTime()
-        await takeShot(
-          browser,
-          (msg) =>
-            callback({
-              job: job,
-              status: 'running',
-              progressDetail: msg,
-              progressIndex: progressIndex,
-              progressTotal: progressTotal
-            }),
-          job.breakpoints,
-          projectId,
-          jobId,
-          i,
-          urlSet.side,
-          urlSet.urls[i],
-          urlSet.auth,
-          urlSet.spoofUrl,
-          job,
-          () => callback({ progressIndex: ++progressIndex, progressTotal: progressTotal })
-        )
-        const duration = new Date().getTime() - startTime
-        saveJobUrlDuration(projectId, jobId, urlSet.side, i, duration)
-        saveJobUrlComplete(projectId, jobId, urlSet.side, i, true)
-        callback({ job: job, status: 'running', progressDetail: `Captured ${urlSet.side} #${i} in ${duration}ms` })
+        try {
+          await takeShot(
+            browser,
+            (msg) =>
+              callback({
+                job: job,
+                status: 'running',
+                progressDetail: msg,
+                progressIndex: progressIndex,
+                progressTotal: progressTotal
+              }),
+            job.breakpoints,
+            projectId,
+            jobId,
+            i,
+            urlSet.side,
+            urlSet.urls[i],
+            urlSet.auth,
+            urlSet.spoofUrl,
+            job,
+            () => callback({ progressIndex: ++progressIndex, progressTotal: progressTotal })
+          )
+          const duration = new Date().getTime() - startTime
+          saveJobUrlDuration(projectId, jobId, urlSet.side, i, duration)
+          saveJobUrlComplete(projectId, jobId, urlSet.side, i, true)
+          callback({ job: job, status: 'running', progressDetail: `Captured ${urlSet.side} #${i} in ${duration}ms` })
+        } catch (error) {
+          const duration = new Date().getTime() - startTime
+          saveJobUrlDuration(projectId, jobId, urlSet.side, i, duration)
+          saveJobUrlComplete(projectId, jobId, urlSet.side, i, true)
+          callback({
+            job: job,
+            status: 'running',
+            progressDetail: `Error ${urlSet.side} #${i} in ${duration}ms: ${error.message}`
+          })
+        }
       }
     }
   } catch (error) {
