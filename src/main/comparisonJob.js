@@ -175,12 +175,14 @@ async function openBrowser(messageCallback) {
   ]
   */
 
+  const chromeArgs = ['--disable-web-security']
+
   return await puppeteer.launch({
     headless: isChromiumHeadless(),
     slowMo: false,
     defaultViewport: null,
     ignoreHTTPSErrors: true,
-    // args: chromeArgs,
+    args: chromeArgs,
     ...chromiumPathOptions
   })
 }
