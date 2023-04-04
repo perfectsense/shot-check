@@ -171,7 +171,8 @@ async function openBrowser(messageCallback) {
   const chromeArgs = [
     '--disable-background-timer-throttling',
     '--disable-backgrounding-occluded-windows',
-    '--disable-renderer-backgrounding'
+    '--disable-renderer-backgrounding',
+    '--auto-open-devtools-for-tabs'
   ]
   */
 
@@ -321,6 +322,7 @@ async function takeShot(
   fs.mkdir(thisJobDir, { recursive: true }, (err) => {
     if (err) throw err
   })
+  const domain = new URL(url).hostname
 
   const page = await browser.newPage()
 
@@ -328,6 +330,7 @@ async function takeShot(
   await page.exposeFunction('shotCheckSleep', sleep)
 
   let headers = {}
+  let cookies = []
 
   if (job.requestHeaders) {
     for (let header of job.requestHeaders) {
@@ -335,7 +338,19 @@ async function takeShot(
       if (pieces.length > 1) {
         const key = pieces[0].trim()
         const value = pieces.slice(1).join(':').trim()
-        headers[key] = value
+        if (key.toLowerCase() == 'cookie') {
+          const crumbs = value.split(';')
+          for (let crumb of crumbs) {
+            const kv = crumb.split('=')
+            cookies.push({
+              name: kv[0].trim(),
+              value: kv.slice(1).join('=').trim(),
+              domain: domain
+            })
+          }
+        } else {
+          headers[key] = value
+        }
       }
     }
   }
@@ -363,6 +378,9 @@ async function takeShot(
 
   console.log('Setting extra request headers: ', headers)
   page.setExtraHTTPHeaders(headers)
+
+  console.log('Setting cookies: ', cookies)
+  page.setCookie(...cookies)
 
   if (auth) {
     console.log(`Authenticating with username ${auth.username}`)
