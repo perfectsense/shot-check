@@ -8,5 +8,6 @@ jobs:
       os: osx
       osx_image: xcode11
       script:
+        - npm install --global yarn
         - yarn config set version-git-tag false && yarn version --new-version ${TRAVIS_TAG/v/}
         - yarn release --mac --win
