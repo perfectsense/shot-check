@@ -18,6 +18,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '14.7.0'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
       - name: Build and Deploy Windows and Mac
         run: |
           npm install --global yarn \
