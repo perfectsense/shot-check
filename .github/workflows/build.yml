@@ -26,5 +26,5 @@ jobs:
         run: |
           npm install --global yarn \
           yarn install \
-          yarn config set version-git-tag false && yarn version --new-version ${GITHUB_ACTIONS_TAG/v/} \
+          yarn version --new-version ${GITHUB_ACTIONS_TAG/v/} \
           yarn release --mac --win
