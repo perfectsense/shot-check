@@ -14,10 +14,12 @@ jobs:
         shell: bash
         run: |
           echo "GITHUB_ACTIONS_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '14.7.0'
       - name: Build and Deploy Windows and Mac
         run: |
-          nvm install 14.7.0 \
-          nvm use 14.7.0 \
           npm install --global yarn \
           yarn install \
           yarn config set version-git-tag false && yarn version --new-version ${GITHUB_ACTIONS_TAG/v/} \
